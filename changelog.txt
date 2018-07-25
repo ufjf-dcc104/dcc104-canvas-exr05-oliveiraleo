@@ -4,4 +4,12 @@
 
 -> Commit 2
 
--
+- Adição
+
+- Ajuste do texto na tela
+- Ajuste na posição das naves
+- Ajuste na função de tiro
+
+- Correção no tiro do player 2
+
+- Remoção de código desnecessário

@@ -24,14 +24,13 @@ function Shot(_x, _y, _vx, _vy, r) {
 	}
 
 	this.move = function(dt, g) {
-		var prevy = this.pos.y;
+		//var prevy = this.pos.y;
 
 		this.pos.x += this.vel.vy * dt;
 		//this.pos.y += this.vel.vx * dt - (g/2) * dt * dt;
 		this.pos.y += this.vel.vx * dt;
-		//this.vel.vy -= g * dt;
 
-		this.radius -= 0.1;
+		//this.radius -= 0.1;
 	}
 	this.setVelocityVector = function(o, _mag) {
 		var mag = _mag || 325;

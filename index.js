@@ -37,10 +37,10 @@ function start() {
 	//variaveis globais
 	var shots = []; var shoot = false;
 	var shots2 = []; var shoot2 = false;
-	var shooter = new Shooter({x: WIDTH/4, y: HEIGHT/2}, {w: 40, h: 70}, "img/cannon");
-  var shooter2 = new Shooter({x: 2*WIDTH/4, y: HEIGHT/2}, {w: 40, h: 70}, "img/cannon");
-	var ball = new Shot(shooter.ballPos.x, shooter.ballPos.y, 0, -325, 12, "img/ball.png");
-  var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, "img/ball.png");
+	var shooter = new Shooter({x: WIDTH/6, y: HEIGHT/2}, {w: 40, h: 70}, "black", PI2);
+  var shooter2 = new Shooter({x: WIDTH-(WIDTH/6), y: HEIGHT/2}, {w: 40, h: 70}, "yellow", -PI2);
+	var ball = new Shot(shooter.ballPos.x, shooter.ballPos.y, 0, -325, 12);
+  var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12);
 
 	//var nave = new Sprite();
 
@@ -183,7 +183,7 @@ function start() {
 		msg.raster(ctx, "Aperte ENTER para começar", WIDTH/5, HEIGHT/2 );
 	}else if(pause){
 		var msg = new Text("Courier", 30, "black");
-		msg.raster(ctx, "Aperte P para continuar", WIDTH/4, HEIGHT/2 );
+		msg.raster(ctx, "Aperte P para continuar", WIDTH/4, 25 );
 	}//else
 
 }
@@ -226,16 +226,21 @@ function start() {
 		}
 		if (e.keyCode == 87) {// W
 			//nave.ay = -100;
+			shooter2.ay = -100;
 		}
 		if (e.keyCode == 83) {// S
 			//nave.ay = 100;
+			shooter2.ay = 100;
 		}
 		if (e.keyCode == 65) {// A
 			//nave.ax = -100;
+			shooter2.ax = -100;
 		}
 		if (e.keyCode == 68) {// D
 			//nave.ax = 100;
-		}if (e.keyCode == 18){// Alt Esq
+			shooter2.ax = 100;
+		}
+		if (e.keyCode == 17){// Alt Esq
 			ball2.pos = {x: shooter2.ballPos.x, y: shooter2.ballPos.y};
 			ball2.setVelocityVector(shooter2.center);
 			shots2.push(ball2);
@@ -265,11 +270,13 @@ function start() {
     }
 		if (e.keyCode == 87 || e.keyCode == 83) {// W e S
 			//nave.ay = 0;
+			shooter2.ay = 0;
 		}
 		if (e.keyCode == 65 || e.keyCode == 68) {// A e D
 			//nave.ax = 0;
+			shooter2.ax = 0;
 		}
-		if (e.keyCode == 18) {
+		if (e.keyCode == 17) {
 			ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, "img/ball.png");
 			shoot2 = false;
 		}
