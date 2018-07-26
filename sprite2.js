@@ -7,7 +7,7 @@ const PI12	  = Math.PI / 12.0;
 const RAD4DEG = Math.PI / 180.0;
 const DEG4RAD = 180.0 / Math.PI;
 //tiros
-function Shot(_x, _y, _vx, _vy, r) {
+function Shot(_x, _y, _vx, _vy, r, dir) {
 	//this.pos = {x: _x, y: _y};
 	this.pos = {_x, _y};
 	//this.vel = {vx: _vx, vy: _vy};
@@ -26,14 +26,28 @@ function Shot(_x, _y, _vx, _vy, r) {
 	this.move = function(dt, g) {
 		//var prevy = this.pos.y;
 
-		this.pos.x += this.vel.vy * dt;
-		//this.pos.y += this.vel.vx * dt - (g/2) * dt * dt;
-		this.pos.y += this.vel.vx * dt;
+		if(dir == 0){
+			this.pos.x += this.vel.vx * dt;
+			//this.pos.y += this.vel.vx * dt - (g/2) * dt * dt;
+			this.pos.y += this.vel.vy * dt;
+		}else if (dir == 1) {
+			this.pos.x += this.vel.vx * dt;
+			//this.pos.y += this.vel.vx * dt - (g/2) * dt * dt;
+			this.pos.y += this.vel.vy * dt;
+		}
+
 
 		//this.radius -= 0.1;
 	}
 	this.setVelocityVector = function(o, _mag) {
-		var mag = _mag || 325;
+		//var mag = _mag || 325;
+		//var mag = 0;
+		if(dir == 0){
+			var mag = _mag || -325;
+		}if (dir == 1) {
+			var mag = _mag || 325;
+		}
+
 		var d = this.pos;
 		var norm = Math.sqrt( Math.pow(d.x - o.x, 2) + Math.pow(o.y - d.y, 2) );
 
@@ -117,9 +131,10 @@ function Shooter(center, size, color, rotacao) {
     this.y += this.vy*dt;
 	}
  //var hit = new Audio('sound/siren.mp3');
-	this.colidiu = function(asteroid) {
-		var p = asteroid.getFrontPoint();
+	this.colidiu = function(ball) {
+		var p = ball.getFrontPoint();
 		var w2 = this.size.w / 2;
+		console.log('Sim');
 		if(this.center.x - w2 -10 <= p.x && p.x <= this.center.x + w2 + 10) {
 			if(this.ballPos.y + 10 < p.y) {
 				this.life -= 1;

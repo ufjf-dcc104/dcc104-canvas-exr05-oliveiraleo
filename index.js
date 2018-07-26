@@ -37,10 +37,14 @@ function start() {
 	//variaveis globais
 	var shots = []; var shoot = false;
 	var shots2 = []; var shoot2 = false;
-	var shooter = new Shooter({x: WIDTH/6, y: HEIGHT/2}, {w: 40, h: 70}, "black", PI2);
-  var shooter2 = new Shooter({x: WIDTH-(WIDTH/6), y: HEIGHT/2}, {w: 40, h: 70}, "yellow", -PI2);
-	var ball = new Shot(shooter.ballPos.x, shooter.ballPos.y, 0, -325, 12);
-  var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12);
+
+	var shooter = new Shooter({x: WIDTH/2, y: HEIGHT/6}, {w: 20, h: 35}, "black", Math.PI);
+  var shooter2 = new Shooter({x: WIDTH/2, y: HEIGHT-(HEIGHT/6)}, {w: 20, h: 35}, "yellow", 2*Math.PI);
+	var ball = new Shot(shooter.ballPos.x, (shooter.ballPos.y-shooter.h), 0, 325, 12, 0);
+  var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, 1);
+
+	//var ball = new Shot(shooter.ballPos.x, shooter.ballPos.y, {(50, 50)}, {(50, 50)}, 1);
+	//var ball2 = new Shot(shooter.ballPos.x, shooter.ballPos.y, {(50, 50)}, {(50, 50)}, 0);
 
 	//var nave = new Sprite();
 
@@ -180,10 +184,10 @@ function start() {
 		}*/
 	}else if(!inicio){
 		var msg = new Text("Courier", 30, "black");
-		msg.raster(ctx, "Aperte ENTER para começar", WIDTH/5, HEIGHT/2 );
+		msg.raster(ctx, "Aperte ENTER para começar", 25, HEIGHT/2 );
 	}else if(pause){
-		var msg = new Text("Courier", 30, "black");
-		msg.raster(ctx, "Aperte P para continuar", WIDTH/4, 25 );
+		var msg = new Text("Courier", 25, "black");
+		msg.raster(ctx, "Aperte P para continuar", (WIDTH/6), HEIGHT/2 );
 	}//else
 
 }
@@ -198,21 +202,25 @@ function start() {
 			ball = null;
 			shoot = true;
 			//tiros++;
-		}if(e.keyCode == 81 || e.keyCode == 37){ //esquerda player 1
+		}if(e.keyCode == 37){ // esquerda player 1
 			//shooter.omega = -2;
-			shooter.ay = -100;
+			//shooter.ax = -100;
+			shooter.vx = -100;
 			e.preventDefault();
-		}else if(e.keyCode == 69 || e.keyCode == 39){ //direita player 1
+		}else if(e.keyCode == 39){ // direita player 1
 			//shooter.omega = 2;
-			shooter.ay = 100;
+			//shooter.ax = 100;
+			shooter.vx = 100;
 			e.preventDefault();
-		}else if (e.keyCode == 38) { //cima player 1
+		}else if (e.keyCode == 38) { // cima player 1
       //shooter.newx = -2*G;
-			shooter.ax = 100;
+			//shooter.ay = -100;
+			shooter.vy = -100;
 			e.preventDefault();
     }else if (e.keyCode == 40) { // baixo player 1
       //shooter.newy = 2*G;
-			shooter.ax = -100;
+			//shooter.ay = 100;
+			shooter.vy = 100;
 			e.preventDefault();
     }
     if(e.keyCode == 13){// Enter
@@ -240,7 +248,7 @@ function start() {
 			//nave.ax = 100;
 			shooter2.ax = 100;
 		}
-		if (e.keyCode == 17){// Alt Esq
+		if (e.keyCode == 17){// Ctrl Esq
 			ball2.pos = {x: shooter2.ballPos.x, y: shooter2.ballPos.y};
 			ball2.setVelocityVector(shooter2.center);
 			shots2.push(ball2);
@@ -251,22 +259,26 @@ function start() {
 
 	addEventListener("keyup", function(e){
 		if(e.keyCode == 32) { // Espaco player 1
-			ball = new Shot(shooter.ballPos.x, shooter.ballPos.y, 0, -325, 12, "img/ball.png");
+			ball = new Shot(shooter.ballPos.x, shooter.ballPos.y, 325, 0, 12, 0);
 			shoot = false;
 		}
-		if(e.keyCode == 37 || e.keyCode == 65){ //esquerda player 1
+		if(e.keyCode == 37){ //esquerda player 1
 			//shooter.omega = 0;
-			shooter.ay = 0;
+			shooter.ax = 0;
+			shooter.vx = 0;
 		}
-		if(e.keyCode == 39 || e.keyCode == 68) { //direita player 1
+		if(e.keyCode == 39) { //direita player 1
 			//shooter.omega = 0;
-			shooter.ay = 0;
+			shooter.ax = 0;
+			shooter.vx = 0;
 		}
 		if (e.keyCode == 38) { //cima player 1
-      shooter.ax = 0;
+      shooter.ay = 0;
+			shooter.vy = 0;
     }
 		if (e.keyCode == 40) { // baixo player 1
-      shooter.ax = 0;
+      shooter.ay = 0;
+			shooter.vy = 0;
     }
 		if (e.keyCode == 87 || e.keyCode == 83) {// W e S
 			//nave.ay = 0;
@@ -276,8 +288,8 @@ function start() {
 			//nave.ax = 0;
 			shooter2.ax = 0;
 		}
-		if (e.keyCode == 17) {
-			ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, "img/ball.png");
+		if (e.keyCode == 17) {// Ctrl Esq
+			ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 325, 0, 12, 1);
 			shoot2 = false;
 		}
 	});

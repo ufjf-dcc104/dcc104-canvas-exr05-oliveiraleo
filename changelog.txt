@@ -4,8 +4,6 @@
 
 -> Commit 2
 
-- Adição
-
 - Ajuste do texto na tela
 - Ajuste na posição das naves
 - Ajuste na função de tiro
@@ -13,3 +11,18 @@
 - Correção no tiro do player 2
 
 - Remoção de código desnecessário
+
+-> Commit 3
+
+- Adição do readme
+
+- Ajuste do tamanho das naves (shooters)
+- Ajuste da posição inicial das naves (shooters)
+- Ajuste do tamanho da tela do jogo
+- Ajuste dos estilos (style.css)
+- Ajuste dos textos da tela
+
+- Correção da função de tiro
+- Correção da função de movimento das naves
+
+- Remoção de controles obsoletos ou duplicados
