@@ -26,3 +26,24 @@
 - Correção da função de movimento das naves
 
 - Remoção de controles obsoletos ou duplicados
+
+-> Commit 4
+
+- Adição de uma nova função de tiro
+- Adição de novos comentários
+- Adição de texto na tela
+- Adição de pontuação
+- Adição de colisão no tiro
+- Adição de colisão das naves com os limites da tela
+- Adição do fim de jogo
+
+- Ajuste na função de tiro para deletar os projeteis que sairam da tela
+- Ajuste na função de reset do jogo
+- Ajuste nas propriedades dos sprites
+- Ajuste na função de posição das naves
+
+- Correção dos controles do player 2
+- Correção nas funções de velocidade das naves
+- Correção na regra do jogo
+
+- Remoção de alguns comentários e códigos obsoletos

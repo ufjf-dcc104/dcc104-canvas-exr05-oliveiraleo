@@ -7,18 +7,22 @@ function Text(font, size, rgb) {
 	this.raster = function(ctx, text, x, y) {
 		ctx.font = "" + this.size + "px " + this.font;
 		ctx.fillStyle = this.color;
-		ctx.fillText(text, x, y);
+		ctx.fillText(text, x, y);// escreve na tela
 	}
 }
 //variaveis globais
 var pause = false;
 var inicio = false;
 
+var texto = new Text();
+var texto2 = new Text("Courier", 20, "red");
+
+var ganhador = 0;
 //Regra do jogo
 function start() {
 	//alert("A diversão vai começar!");
 	var canvas = document.getElementById("game");
-	var ctx = canvas.getContext("2d");
+	var ctx = canvas.getContext("2d");// cria o contexto
 	//texto do jogo na tela
 	//var destruidos = new Text();
 	//var textoTiros = new Text();
@@ -34,22 +38,27 @@ function start() {
 	const FPS = 60;
 	const DT = 1/FPS;
 	const G = -20;
+
+	const PTSMAX = 2; // pontuacao que encerra o jogo
 	//variaveis globais
 	var shots = []; var shoot = false;
 	var shots2 = []; var shoot2 = false;
 
-	var shooter = new Shooter({x: WIDTH/2, y: HEIGHT/6}, {w: 20, h: 35}, "black", Math.PI);
+	var shooter1 = new Shooter({x: WIDTH/2, y: HEIGHT/6}, {w: 20, h: 35}, "black", Math.PI);
   var shooter2 = new Shooter({x: WIDTH/2, y: HEIGHT-(HEIGHT/6)}, {w: 20, h: 35}, "yellow", 2*Math.PI);
-	var ball = new Shot(shooter.ballPos.x, (shooter.ballPos.y-shooter.h), 0, 325, 12, 0);
+	var ball = new Shot(shooter1.ballPos.x, (shooter1.ballPos.y-shooter1.h), 0, 325, 12, 0);
   var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, 1);
 
-	//var ball = new Shot(shooter.ballPos.x, shooter.ballPos.y, {(50, 50)}, {(50, 50)}, 1);
-	//var ball2 = new Shot(shooter.ballPos.x, shooter.ballPos.y, {(50, 50)}, {(50, 50)}, 0);
+	//var ball = new Shot(shooter1.ballPos.x, shooter1.ballPos.y, {(50, 50)}, {(50, 50)}, 1);
+	//var ball2 = new Shot(shooter1.ballPos.x, shooter1.ballPos.y, {(50, 50)}, {(50, 50)}, 0);
 
 	//var nave = new Sprite();
 
 	//var lvl = 0;
-  var pontos = 0;
+  //var pontos1 = 0;
+	//var pontos2 = 0;
+	var verificaPontos1 = false;
+	var verificaPontos2 = false;
 	//var gen = new CollectionGenerator(WIDTH, HEIGHT);
 	//var builds = [];
 	//var asteroids = [];
@@ -64,29 +73,92 @@ function start() {
 	//var fim = new Audio('sound/gameover.mp3');
 	//reset do jogo
 	function reset() {
-		if(recomeca){
-			var msg = new Text("Courier", 30, "black");
+		ctx.clearRect(0, 0, WIDTH, HEIGHT);
+		if(!recomeca){
+			var msg = new Text("Courier", 25, "black");
 			if (verificaInicio) {
-			msg.raster(ctx, "Aperte R para continuar", WIDTH/4, HEIGHT/2 );
+				if (ganhador == 1){
+					msg.raster(ctx, "Player 1 ganhou!", WIDTH/8, HEIGHT/4);
+				}if (ganhador == 2){
+					msg.raster(ctx, "Player 2 ganhou!", WIDTH/8, HEIGHT-HEIGHT/3);
+				}
+				msg.raster(ctx, "Apertem R para continuar", WIDTH/6, HEIGHT/2 );
 			}
 		}
 		verificaInicio = true;
+		//reposiciona as naves
+		shooter1.center = {x: WIDTH/2, y: HEIGHT/6};
+		shooter2.center = {x: WIDTH/2, y: HEIGHT-(HEIGHT/6)};
+
+
 		//musica.currentTime = 0; //recomeca a musica de fundo
 		//lvl = 1;
 		//pontos = 0;
 		//builds = gen.build(11);//gera predios
-		//builds.splice(5, 1); // remove o que esta na frente do shooter
+		//builds.splice(5, 1); // remove o que esta na frente do shooter1
 		//asteroids = gen.asteroid(lvl); //reseta o gen de asteroide
-		shooter.reset();//volta o shooter para posicao inicial
-    shooter2.reset();
+		shooter1.reset();//volta as propriedades do shooter ao padrao do inicio
+    shooter2.reset();//volta as propriedades do shooter ao padrao do inicio
 		//tiros = 0;
 		//ratio = 0;
 		//shoot.length = 0;
+		ganhador = 0;
+		//ctx.clearRect(0, 0, WIDTH, HEIGHT);
 	}; reset();
 	//regra do jogo
 	var loop = function() {
+		//ctx.clearRect(0, 0, WIDTH, HEIGHT);
 		if(inicio && !pause && recomeca){
 		ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+		//texto da tela do jogo
+		texto.raster(ctx, "Player 1", 17, 20);
+		texto.raster(ctx, "Pontos: " + shooter1.pontos, 10, 40);
+		texto.raster(ctx, "Vidas:" + shooter1.life, 10, 60);
+
+		texto2.raster(ctx, "Player 2", WIDTH-105, 20);
+		texto2.raster(ctx, "Pontos: " + shooter2.pontos, WIDTH-110, 40);
+		texto2.raster(ctx, "Vidas:" + shooter2.life, WIDTH-100, 60);
+
+
+		//console.log(shooter2.center);
+		//if (recomeca) {
+			//ctx.clearRect(0, 0, WIDTH, HEIGHT);
+		//}
+
+		for(var i = 0; i < shots.length; i++){
+			if(((shots[i].pos.x >= shooter2.center.x-shooter2.size.w) && (shots[i].pos.x <= shooter2.center.x+shooter2.size.w)) &&
+			((shots[i].pos.y >= shooter2.center.y-shooter2.size.h) && (shots[i].pos.y <= shooter2.center.y+shooter2.size.h)) &&
+			!verificaPontos1){
+				verificaPontos1 = true;
+				if(verificaPontos1){
+					shooter2.life--;
+				}
+			}
+		}
+		if (shooter2.life <= 0) {
+			shooter1.pontos++;
+			shooter2.reset();
+		}
+		//console.log(shooter2.life);
+		for(var i = 0; i < shots2.length; i++){
+			if(((shots2[i].pos.x >= shooter1.center.x-shooter1.size.w) && (shots2[i].pos.x <= shooter1.center.x+shooter1.size.w)) &&
+			((shots2[i].pos.y >= shooter1.center.y-shooter1.size.h) && (shots2[i].pos.y <= shooter1.center.y+shooter1.size.h)) &&
+			!verificaPontos2){
+				verificaPontos2 = true;
+				if(verificaPontos2){
+					shooter1.life--;
+				}
+			}
+		}
+		if (shooter1.life <= 0) {
+			shooter2.pontos++;
+			shooter1.reset();
+		}
+
+		/*if(shooter2.tomouTiro()){
+			pontos1++;
+		}*/
 		//musica jogo fundo
 		/*musica.play();
 		musica.volume = 0.3;
@@ -107,20 +179,50 @@ function start() {
 			if(ast.center.y > HEIGHT + ast.radius || ast.center.x < -ast.radius || ast.center.x > WIDTH + ast.radius)
 				asteroids.splice(i, 1);
 		}*/
-		//atira player 1
-		for(var i = 0; i < shots.length; i++) {
-			shots[i].move(DT, G);
-			if(shots[i].pos.y < 0 || shots[i].pos.x < 0 || shots[i].pos.x > WIDTH)
-				shots.splice(i, 1);
+		//contadores para o for do tiro
+		var cont, cont2;
+		//tiros player 1
+		for(cont = 0; cont < shots.length; cont++) {
+			shots[cont].move(DT, G);
+			//Apaga os tiros que saem da tela
+			if(shots[cont].pos.y < 0 || shots[cont].pos.x < 0 || shots[cont].pos.x > WIDTH || shots[cont].pos.y > HEIGHT){// impõe limites
+				shots.splice(cont, 1);// remove o tiro do vetor
+				verificaPontos1 = false;// liga novamente o contador
+			}
 		}
-		//atira player 2
-		for(var i = 0; i < shots2.length; i++) {
-			shots2[i].move(DT, G);
-			if(shots2[i].pos.y < 0 || shots2[i].pos.x < 0 || shots2[i].pos.x > WIDTH)
-				shots2.splice(i, 1);
+		//tiros player 2
+		for(cont2 = 0; cont2 < shots2.length; cont2++) {
+			shots2[cont2].move(DT, G);
+			//Apaga os tiros que saem da tela
+			if(shots2[cont2].pos.y < 0 || shots2[cont2].pos.x < 0 || shots2[cont2].pos.x > WIDTH || shots2[cont2].pos.y > HEIGHT){// impõe limites
+				shots2.splice(cont2, 1);// remove o tiro do vetor
+				verificaPontos2 = false;// liga novamente o contador
+			}
 		}
-		shooter.move(DT, G);
+		//Movimenta as naves
+		shooter1.move(DT, G);
     shooter2.move(DT, G);
+		//limite das naves na tela
+		//player 1
+		if (shooter1.center.x < shooter1.size.w) {
+			shooter1.center.x = shooter1.size.w;
+		}if (shooter1.center.x > WIDTH-shooter1.size.w) {
+			shooter1.center.x = WIDTH-shooter1.size.w;
+		}if (shooter1.center.y < shooter1.size.h) {
+			shooter1.center.y = shooter1.size.h;
+		}if (shooter1.center.y > HEIGHT-shooter1.size.h) {
+			shooter1.center.y = HEIGHT-shooter1.size.h;
+		}
+		//player 2
+		if (shooter2.center.x < shooter2.size.w) {
+			shooter2.center.x = shooter2.size.w;
+		}if (shooter2.center.x > WIDTH-shooter2.size.w) {
+			shooter2.center.x = WIDTH-shooter2.size.w;
+		}if (shooter2.center.y < shooter2.size.h) {
+			shooter2.center.y = shooter2.size.h;
+		}if (shooter2.center.y > HEIGHT-shooter2.size.h) {
+			shooter2.center.y = HEIGHT-shooter2.size.h;
+		}
 		//nave.mover(DT);
 
 		/*for(var i = 0; i < asteroids.length; i++) {
@@ -153,7 +255,7 @@ function start() {
 			}
 		}
 		for(var i = 0; i < asteroids.length; i++) {
-			var status = shooter.colidiu(asteroids[i]);
+			var status = shooter1.colidiu(asteroids[i]);
 			if(status != 0) {
 				asteroids.splice(i, 1);
 				if(status == 2) {
@@ -167,60 +269,72 @@ function start() {
 		//desenha os objetos no canvas
 		//builds.forEach( function(build) { build.draw(ctx); } );
 		//asteroids.forEach( function(ast) { ast.draw(ctx, true); } );
+		//desenha os tiros na tela
 		shots.forEach( function(shot) { shot.draw(ctx); } );
 		shots2.forEach( function(shot2) { shot2.draw(ctx); } );
-		shooter.draw(ctx);
+		//desenha as naves na tela
+		shooter1.draw(ctx);
 		shooter2.draw(ctx);
 		//nave.desenhar(ctx);
 		//texto placar
 		/*destruidos.raster(ctx, "Destruidos: " + pontos, 10, 25);
 		textoTiros.raster(ctx, "Tiros: " + tiros, 10, 55);
-		canhaoVidas.raster(ctx, "Vidas: " + shooter.life, 10, 85);
+		canhaoVidas.raster(ctx, "Vidas: " + shooter1.life, 10, 85);
 		textoRatio.raster(ctx, "Precisão: " + ratio + "%", 10, 115);
 		textoBuilds.raster(ctx, "Prédios: " + builds.length, 10, 145);
     */
 		/*if(asteroids.length < lvl){
 			asteroids = asteroids.concat(gen.asteroid(lvl));
 		}*/
-	}else if(!inicio){
+		if (shooter1.pontos >= PTSMAX || shooter2.pontos >= PTSMAX) { // fim de jogo
+			//verifica quem ganhou
+			if (shooter1.pontos >= PTSMAX) {
+				ganhador = 1;
+			}if (shooter2.pontos >= PTSMAX) {
+				ganhador = 2;
+			}
+			recomeca = false;
+			reset();
+		}
+	//}
+	}else if(!inicio){// exibe a mensagem da tela inicial
 		var msg = new Text("Courier", 30, "black");
-		msg.raster(ctx, "Aperte ENTER para começar", 25, HEIGHT/2 );
-	}else if(pause){
+		msg.raster(ctx, "Apertem ENTER para começar", 25, HEIGHT/2 );
+	}else if(pause){// exibe a mensagem de jogo pausado
 		var msg = new Text("Courier", 25, "black");
-		msg.raster(ctx, "Aperte P para continuar", (WIDTH/6), HEIGHT/2 );
-	}//else
-
+		msg.raster(ctx, "Apertem P para continuar", (WIDTH/6), HEIGHT/2 );
+	}
 }
 
 	setInterval(loop, 1000/FPS);
 	//controle do jogo
 	addEventListener("keydown", function(e){
 		if(e.keyCode == 32 && !shoot) { // Espaco, tiro player 1
-			ball.pos = {x: shooter.ballPos.x, y: shooter.ballPos.y};
-			ball.setVelocityVector(shooter.center);
-			shots.push(ball);
-			ball = null;
-			shoot = true;
-			//tiros++;
+			ball.pos = {x: shooter1.ballPos.x, y: (shooter1.ballPos.y+shooter1.size.h)}; // marca a posicao da bala
+			ball.setVelocityVector(shooter1.center); // ajusta a velocidade da bala
+			shots.push(ball); // adiciona a bala no vetor de tiros
+			ball = null; // apaga a bala auxiliar
+			shoot = true;// bloqueia a repeticao do tiro
+			e.preventDefault();
 		}if(e.keyCode == 37){ // esquerda player 1
-			//shooter.omega = -2;
-			//shooter.ax = -100;
-			shooter.vx = -100;
+			//shooter1.omega = -2;
+			//shooter1.ax = -100;
+			shooter1.vx = -100;
 			e.preventDefault();
-		}else if(e.keyCode == 39){ // direita player 1
-			//shooter.omega = 2;
-			//shooter.ax = 100;
-			shooter.vx = 100;
+		}if(e.keyCode == 39){ // direita player 1
+			//shooter1.omega = 2;
+			//shooter1.ax = 100;
+			shooter1.vx = 100;
 			e.preventDefault();
-		}else if (e.keyCode == 38) { // cima player 1
-      //shooter.newx = -2*G;
-			//shooter.ay = -100;
-			shooter.vy = -100;
+		}if (e.keyCode == 38) { // cima player 1
+      //shooter1.newx = -2*G;
+			//shooter1.ay = -100;
+			shooter1.vy = -100;
 			e.preventDefault();
-    }else if (e.keyCode == 40) { // baixo player 1
-      //shooter.newy = 2*G;
-			//shooter.ay = 100;
-			shooter.vy = 100;
+    }if (e.keyCode == 40) { // baixo player 1
+      //shooter1.newy = 2*G;
+			//shooter1.ay = 100;
+			shooter1.vy = 100;
 			e.preventDefault();
     }
     if(e.keyCode == 13){// Enter
@@ -234,62 +348,58 @@ function start() {
 		}
 		if (e.keyCode == 87) {// W
 			//nave.ay = -100;
-			shooter2.ay = -100;
+			shooter2.vy = -100;
+			e.preventDefault();
 		}
 		if (e.keyCode == 83) {// S
 			//nave.ay = 100;
-			shooter2.ay = 100;
+			shooter2.vy = 100;
+			e.preventDefault();
 		}
 		if (e.keyCode == 65) {// A
 			//nave.ax = -100;
-			shooter2.ax = -100;
+			shooter2.vx = -100;
+			e.preventDefault();
 		}
 		if (e.keyCode == 68) {// D
 			//nave.ax = 100;
-			shooter2.ax = 100;
+			shooter2.vx = 100;
+			e.preventDefault();
 		}
-		if (e.keyCode == 17){// Ctrl Esq
-			ball2.pos = {x: shooter2.ballPos.x, y: shooter2.ballPos.y};
-			ball2.setVelocityVector(shooter2.center);
-			shots2.push(ball2);
-			ball2 = null;
-			shoot2 = true;
+		if (e.keyCode == 16){// Shift Esq
+			ball2.pos = {x: shooter2.ballPos.x, y: shooter2.ballPos.y}; // marca a posicao da bala
+			ball2.setVelocityVector(shooter2.center); // ajusta a velocidade da bala
+			shots2.push(ball2); // adiciona a bala no vetor de tiros
+			ball2 = null; // apaga a bala auxiliar
+			shoot2 = true;// bloqueia a repeticao do tiro
+			e.preventDefault();
 		}
 	});
 
 	addEventListener("keyup", function(e){
 		if(e.keyCode == 32) { // Espaco player 1
-			ball = new Shot(shooter.ballPos.x, shooter.ballPos.y, 325, 0, 12, 0);
+			ball = new Shot(shooter1.ballPos.x, shooter1.ballPos.y, 325, 0, 12, 0);// prepara a nova bala
 			shoot = false;
 		}
-		if(e.keyCode == 37){ //esquerda player 1
-			//shooter.omega = 0;
-			shooter.ax = 0;
-			shooter.vx = 0;
+		if(e.keyCode == 37 || e.keyCode == 39){ //esquerda e direita player 1
+			//shooter1.omega = 0;
+			shooter1.ax = 0;
+			shooter1.vx = 0;
 		}
-		if(e.keyCode == 39) { //direita player 1
-			//shooter.omega = 0;
-			shooter.ax = 0;
-			shooter.vx = 0;
-		}
-		if (e.keyCode == 38) { //cima player 1
-      shooter.ay = 0;
-			shooter.vy = 0;
-    }
-		if (e.keyCode == 40) { // baixo player 1
-      shooter.ay = 0;
-			shooter.vy = 0;
+		if (e.keyCode == 38 || e.keyCode == 40) { //cima e baixo player 1
+      shooter1.ay = 0;
+			shooter1.vy = 0;
     }
 		if (e.keyCode == 87 || e.keyCode == 83) {// W e S
 			//nave.ay = 0;
-			shooter2.ay = 0;
+			shooter2.vy = 0;
 		}
 		if (e.keyCode == 65 || e.keyCode == 68) {// A e D
 			//nave.ax = 0;
-			shooter2.ax = 0;
+			shooter2.vx = 0;
 		}
-		if (e.keyCode == 17) {// Ctrl Esq
-			ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 325, 0, 12, 1);
+		if (e.keyCode == 16) {// Shift Esq
+			ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 325, 0, 12, 1);// prepara a nova bala
 			shoot2 = false;
 		}
 	});

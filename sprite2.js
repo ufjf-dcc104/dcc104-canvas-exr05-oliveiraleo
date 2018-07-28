@@ -6,6 +6,7 @@ const PI6	  = Math.PI / 6.0;
 const PI12	  = Math.PI / 12.0;
 const RAD4DEG = Math.PI / 180.0;
 const DEG4RAD = 180.0 / Math.PI;
+
 //tiros
 function Shot(_x, _y, _vx, _vy, r, dir) {
 	//this.pos = {x: _x, y: _y};
@@ -43,7 +44,7 @@ function Shot(_x, _y, _vx, _vy, r, dir) {
 		//var mag = _mag || 325;
 		//var mag = 0;
 		if(dir == 0){
-			var mag = _mag || -325;
+			var mag = _mag || 325;
 		}if (dir == 1) {
 			var mag = _mag || 325;
 		}
@@ -55,6 +56,8 @@ function Shot(_x, _y, _vx, _vy, r, dir) {
 		this.vel.vx *= mag;
 		this.vel.vy *= mag;
 	}
+
+	//this.
 }
 
 
@@ -68,20 +71,21 @@ function Shooter(center, size, color, rotacao) {
   //this.newx = 0;
   //this.newy = 0;
 
-	this.x = 100;
-  this.y = 100;
+	//this.x = 100;
+  //this.y = 100;
   //this.w = 20;
   //this.h = 20;
   this.vx = 0;
   this.vy = 0;
-  this.ax = 0;
-  this.ay = 0;
-  this.ang = 0;
-  this.vang = 0;
-  this.acel = 0;
+  //this.ax = 0;
+  //this.ay = 0;
+  //this.ang = 0;
+  //this.vang = 0;
+  //this.acel = 0;
 	this.color = " ";
   //this.cor = "grey";
 	this.rotacao = rotacao;
+	this.pontos = 0;
 
 	this.ballPos = {x: this.center.x, y: this.center.y - this.size.h / 2};
 
@@ -124,17 +128,17 @@ function Shooter(center, size, color, rotacao) {
 
 		//new
 
-		this.vx += this.ax*dt;
-    this.vy += this.ay*dt;
+		//this.vx += this.ax*dt;
+    //this.vy += this.ay*dt;
 
-    this.x += this.vx*dt;
-    this.y += this.vy*dt;
+    //this.x += this.vx*dt;
+    //this.y += this.vy*dt;
 	}
  //var hit = new Audio('sound/siren.mp3');
-	this.colidiu = function(ball) {
+	/*this.colidiu = function(ball) {
 		var p = ball.getFrontPoint();
 		var w2 = this.size.w / 2;
-		console.log('Sim');
+		console.log('Tiro');
 		if(this.center.x - w2 -10 <= p.x && p.x <= this.center.x + w2 + 10) {
 			if(this.ballPos.y + 10 < p.y) {
 				this.life -= 1;
@@ -146,12 +150,13 @@ function Shooter(center, size, color, rotacao) {
 			}
 		}
 		return 0;
-	}
+	}*/
 
 	this.reset = function() {
 		this.life = 3;
 		//this.theta = 0;
 		//this.omega = 0;
+		this.pontos = 0;
 	}
 }
 
