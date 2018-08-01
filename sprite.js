@@ -6,178 +6,153 @@ const PI6	  = Math.PI / 6.0;
 const PI12	  = Math.PI / 12.0;
 const RAD4DEG = Math.PI / 180.0;
 const DEG4RAD = 180.0 / Math.PI;
-//tiros
-function Shot(_x, _y, _vx, _vy, r) {
-	//this.pos = {x: _x, y: _y};
-	this.pos = {_x, _y};
-	//this.vel = {vx: _vx, vy: _vy};
-	this.vel = {_vx, _vy};
-	this.radius = r;
 
+//Posicao barra
+function Point(x, y) {
+	this.x = x;
+	this.y = y;
+}
+//Tamanho barra
+function Size(w, h) {
+	this.w = w;
+	this.h = h;
+}
+
+//tiros
+function Shot(x, y, vx, vy, r, dir) {
+	this.pos = {x, y};
+	this.vel = {vx, vy};
+	this.radius = r;
+	//desenha os tiros
 	this.draw = function(ctx) {
-		ctx.fillStyle   = "#000000";
-		ctx.strokeStyle = "#ff0000";
+		ctx.fillStyle   = "red";
+		ctx.strokeStyle = "black";
 		ctx.beginPath();
 			ctx.arc(this.pos.x, this.pos.y, 4, 0, 2 * Math.PI, true);
 		ctx.closePath();
 		ctx.fill();
+		console.log("Desenha");
 	}
-
+	//move os tiros
 	this.move = function(dt, g) {
-		var prevy = this.pos.y;
-
-		this.pos.x += this.vel.vy * dt;
-		//this.pos.y += this.vel.vx * dt - (g/2) * dt * dt;
-		this.pos.y += this.vel.vx * dt;
-		//this.vel.vy -= g * dt;
-
-		this.radius -= 0.1;
+		//this.pos = {x: this.ballPos.x, y: this.ballPos.y}
+		//if(dir == 0){
+			this.pos.x += this.vel.vx * dt;
+			this.pos.y += this.vel.vy * dt;
+		//}else if (dir == 1) {
+			//this.pos.x += this.vel.vx * dt;
+			//this.pos.y += this.vel.vy * dt;
+		//}
+		console.log(this.pos);
 	}
+	//cria o vetor de velocidade do tiro
 	this.setVelocityVector = function(o, _mag) {
-		var mag = _mag || 325;
+		if(dir == 0){
+			var mag = _mag || 325;
+		}if (dir == 1) {
+			var mag = _mag || 325;
+		}
+
 		var d = this.pos;
 		var norm = Math.sqrt( Math.pow(d.x - o.x, 2) + Math.pow(o.y - d.y, 2) );
 
 		this.vel = {vx: (d.x - o.x)/norm, vy: (d.y - o.y)/norm};
 		this.vel.vx *= mag;
 		this.vel.vy *= mag;
+		console.log(this.vel);
 	}
 }
-
-
 
 //naves
 function Shooter(center, size, color, rotacao) {
 	this.center = center || {x: 0, y: 0};
+	//this.x = 0;
+	//this.y = 0;
+	//this.center = center;
 	this.size  = size || {w: 50, h: 50};
 	this.theta = 0;
 	this.omega = 0;
-  //this.newx = 0;
-  //this.newy = 0;
-
-	this.x = 100;
-  this.y = 100;
-  //this.w = 20;
-  //this.h = 20;
+	this.g = 0;
   this.vx = 0;
   this.vy = 0;
-  this.ax = 0;
-  this.ay = 0;
-  this.ang = 0;
-  this.vang = 0;
-  this.acel = 0;
 	this.color = " ";
-  //this.cor = "grey";
-	this.rotacao = rotacao;
+	//this.rotacao = rotacao;
+	this.pontos = 0;
+	this.ax = 0;
+	this.ay = 0;
+	this.am = 0;
+	this.angle = 90;
+	this.vang = 0;
 
 	this.ballPos = {x: this.center.x, y: this.center.y - this.size.h / 2};
-
+	//desenha a nave
 	this.draw = function(ctx) {
-		if(!ctx) return;
+		if(!ctx) return;// somente desenha se existe contexto
 
 		ctx.save();
 		ctx.translate(this.center.x, this.center.y);
-		//ctx.rotate(this.theta);
-		ctx.rotate(rotacao);
+		ctx.rotate(this.angle*2*Math.PI/360);
 		//cor
-		//ctx.fillStyle = "#000000";
 		ctx.fillStyle = color;
 		ctx.strokeStyle = "#00ff26";
 		ctx.beginPath();
-			ctx.moveTo(-this.size.w / 2, this.size.h / 2);
-			ctx.lineTo(this.size.w / 2,  this.size.h / 2);
-			ctx.lineTo(0, -this.size.h / 2);
+			ctx.moveTo(this.size.w / 2, this.size.h / 2);
+			ctx.lineTo(-this.size.w / 2,  this.size.h / 32);
+			ctx.lineTo(this.size.w / 2, -this.size.h / 2);
 		ctx.closePath();
 		ctx.fill();
 		ctx.stroke();
 
+		if(true){
+	    ctx.strokeStyle = "grey";
+	    ctx.strokeRect(-this.size.w/2, -this.size.h/2, this.size.w, this.size.h);
+	  }
+
 		ctx.restore();
-	}
 
-	this.move = function(dt, g) {
-		//limite de rotacao
-		//this.theta += this.omega * dt;
-		/*if(this.theta < -PI3) {
-			this.theta = -PI3;
-		} else if(PI3 < this.theta) {
-			this.theta = PI3;
-		}*/
+}
+	//move a nave
+	this.move = function(dt) {
+		//console.log(this.angle);
 
-		this.ballPos.x = this.center.x + (this.size.h / 2) * Math.sin(this.theta);
-		this.ballPos.y = this.center.y - (this.size.h / 2) * Math.cos(this.theta);
-    //console.log(this.center);
+		if(this.angle > 360 || this.angle < -360){
+			this.angle = 0;
+		}
+
+ 		//posiciona o tiro na ponta da nave e define a direcao
+		//this.ballPos.x = this.center.x + (this.size.h / 2) * Math.sin(this.angle);
+		//this.ballPos.y = this.center.y + (this.size.h / 2) * Math.cos(this.angle);
+
+		this.ballPos.x = this.center.x * Math.tan(this.size.h*(this.size.w/2));
+		this.ballPos.y = this.center.y * Math.cos(this.angle);
+		//move a nave
+
+
+		this.angle = this.angle + this.vang*dt;
+		this.vx = this.am*Math.cos(Math.PI*this.angle/180);
+		this.vy = this.am*Math.sin(Math.PI*this.angle/180);
+		this.vy = this.vy + this.ay*dt;
+		this.vx = this.vx + this.ax*dt;
+		this.center.x += this.vx * dt;
+    this.center.y += this.vy * dt;
+		this.angle = this.angle + this.vang*dt;
+
+/*
+		this.angle = this.angle + this.vang*dt;
+		this.ax = this.am*Math.cos(Math.PI*this.angle/180);
+		this.ay = this.am*Math.sin(Math.PI*this.angle/180);
+
+		this.vx = this.vx + this.ax*dt;
+		this.vy = this.vy + (this.ay+this.g)*dt;
+
     this.center.x += this.vx * dt;
     this.center.y += this.vy * dt;
 
-		//new
-
-		this.vx += this.ax*dt;
-    this.vy += this.ay*dt;
-
-    this.x += this.vx*dt;
-    this.y += this.vy*dt;
+		*/
 	}
- //var hit = new Audio('sound/siren.mp3');
-	this.colidiu = function(asteroid) {
-		var p = asteroid.getFrontPoint();
-		var w2 = this.size.w / 2;
-		if(this.center.x - w2 -10 <= p.x && p.x <= this.center.x + w2 + 10) {
-			if(this.ballPos.y + 10 < p.y) {
-				this.life -= 1;
-				hit.play();
-				if(this.life == 0){
-					return 2;
-				}
-				return 1;
-			}
-		}
-		return 0;
-	}
-
+  //reset da nave
 	this.reset = function() {
 		this.life = 3;
-		//this.theta = 0;
-		//this.omega = 0;
+		this.pontos = 0;
 	}
 }
-
-/*function CollectionGenerator(W, H) {
-	this.WIDTH  = W;
-	this.HEIGHT = H;
-
-	this.build = function(n){
-		var builds = [];
-		var lastw = 0;
-
-		for(var i = 0; i < n; i++) {
-			var wi = Math.floor(50 + Math.random() * 10);
-			var hi = Math.floor(100 + Math.random() * 40);
-			var xi = 5 + i * (lastw + 20);
-			var yi = this.HEIGHT - hi;
-
-
-			lastw = wi;
-
-			builds.push(new Build(xi, yi, wi, hi));
-		}
-		return builds;
-	},
-	this.asteroid = function(n) {
-		var asteroids = [];
-		var s = function() {
-			return Math.pow(-1, Math.floor(Math.random() * 2));
-		}
-
-		for(var i = 0; i < n; i++) {
-			var r  = Math.floor(8 + Math.random() * 4);
-			var cx = Math.floor(10 + Math.random() * this.WIDTH-10);
-			var cy = -r * (i + 2);
-			var vx = s() * Math.floor(10 + Math.random() * 10);
-			var vy = s() * Math.floor(10 + Math.random() * 10);
-
-			asteroids.push(new Asteroid(cx, cy, r, vx, vy));
-		}
-
-		return asteroids;
-	}
-};*/

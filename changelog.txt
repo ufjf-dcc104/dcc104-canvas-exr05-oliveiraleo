@@ -47,3 +47,18 @@
 - Correção na regra do jogo
 
 - Remoção de alguns comentários e códigos obsoletos
+
+-> Commit 5
+
+- Adição de sons
+- Adição de novos objetos (no sprite)
+
+- Ajuste nos comentários
+
+- Correção da exibição dos textos na tela
+- Correção da função de movimento
+- Correção do desenho dos sprites
+- Correção na função de tiro
+
+- Remoção de arquivos desnecessários
+- Remoção geral de código inutilizado
