@@ -35,6 +35,7 @@ function Shot(x, y, vx, vy, r, dir) {
 	}
 	//move os tiros
 	this.move = function(dt, g) {
+
 		//this.pos = {x: this.ballPos.x, y: this.ballPos.y}
 		//if(dir == 0){
 			this.pos.x += this.vel.vx * dt;
@@ -115,6 +116,15 @@ function Shooter(center, size, color, rotacao) {
 	this.move = function(dt) {
 		//console.log(this.angle);
 
+		if (this.center.x < this.size.w/2) {
+			this.center.x = this.size.w/2;
+		}if (this.center.x > 500-this.size.w/2) {
+			this.center.x = 500-this.size.w/2;
+		}if (this.center.y < this.size.h/2) {
+			this.center.y = this.size.h/2;
+		}if (this.center.y > 500-this.size.h/2) {
+			this.center.y = 500-this.size.h/2;
+		}
 		if(this.angle > 360 || this.angle < -360){
 			this.angle = 0;
 		}
