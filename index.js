@@ -69,8 +69,11 @@ function start() {
   var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, 1);
 
 	//Instancia os obstaculos
-	var parede1 = new Barreira({x: WIDTH/4, y: HEIGHT/6}, {w: 50, h: 50});
-	var parede2 = new Barreira({x: WIDTH/8, y: HEIGHT/6}, {w: 50, h: 50});
+	var parede1 = new Barreira({x: WIDTH/6, y: HEIGHT/6}, {w: 50, h: 50});
+	var parede2 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT/6}, {w: 50, h: 50});
+	var parede3 = new Barreira({x: WIDTH/6, y: HEIGHT-(HEIGHT/4)}, {w: 50, h: 50});
+	var parede4 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT-(HEIGHT/4)}, {w: 50, h: 50});
+	var parede5 = new Barreira({x: (WIDTH/2)-80, y: (HEIGHT/2)-30}, {w: 150, h: 50});
 
 	var verificaPontos1 = false;
 	var verificaPontos2 = false;
@@ -104,7 +107,7 @@ function start() {
 
 		shooter1.reset();//volta as propriedades do shooter ao padrao do inicio
     shooter2.reset();//volta as propriedades do shooter ao padrao do inicio
-		ganhador = 0;
+		ganhador = 0;//reseta o ganhador
 	}; reset();
 	//regra do jogo
 	var loop = function() {
@@ -120,8 +123,7 @@ function start() {
 		texto2.raster(ctx, "Pontos: " + shooter2.pontos, WIDTH-110, 40);
 		texto2.raster(ctx, "Vidas:" + shooter2.life, WIDTH-100, 60);
 
-		//contadores para o for do tiro
-		var cont, cont2;
+		var cont, cont2;//contadores para o for do tiro
 		//tiros player 1
 		for(cont = 0; cont < shots.length; cont++) {
 			//shots[cont].draw(ctx);
@@ -144,27 +146,7 @@ function start() {
 		//Movimenta as naves
 		shooter1.move(DT);
     shooter2.move(DT);
-		//limite das naves na tela
-		//player 1
-		/*if (shooter1.center.x < shooter1.size.w) {
-			shooter1.center.x = shooter1.size.w;
-		}if (shooter1.center.x > WIDTH-shooter1.size.w) {
-			shooter1.center.x = WIDTH-shooter1.size.w;
-		}if (shooter1.center.y < shooter1.size.h) {
-			shooter1.center.y = shooter1.size.h;
-		}if (shooter1.center.y > HEIGHT-shooter1.size.h) {
-			shooter1.center.y = HEIGHT-shooter1.size.h;
-		}
-		//player 2
-		if (shooter2.center.x < shooter2.size.w) {
-			shooter2.center.x = shooter2.size.w;
-		}if (shooter2.center.x > WIDTH-shooter2.size.w) {
-			shooter2.center.x = WIDTH-shooter2.size.w;
-		}if (shooter2.center.y < shooter2.size.h) {
-			shooter2.center.y = shooter2.size.h;
-		}if (shooter2.center.y > HEIGHT-shooter2.size.h) {
-			shooter2.center.y = HEIGHT-shooter2.size.h;
-		}*/
+
 		//desenha os tiros na tela
 		shots.forEach( function(shot) { shot.draw(ctx); } );
 		shots2.forEach( function(shot2) { shot2.draw(ctx); } );
@@ -174,6 +156,9 @@ function start() {
 		//desenha os obstaculos
 		parede1.draw(ctx);
 		parede2.draw(ctx);
+		parede3.draw(ctx);
+		parede4.draw(ctx);
+		parede5.draw(ctx);
 
 		if (shooter1.pontos >= PTSMAX || shooter2.pontos >= PTSMAX) { // fim de jogo
 			//verifica quem ganhou

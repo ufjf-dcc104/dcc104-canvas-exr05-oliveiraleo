@@ -115,7 +115,7 @@ function Shooter(center, size, color, rotacao) {
 	//move a nave
 	this.move = function(dt) {
 		//console.log(this.angle);
-
+		//verifica os limites da tela
 		if (this.center.x < this.size.w/2) {
 			this.center.x = this.size.w/2;
 		}if (this.center.x > 500-this.size.w/2) {
@@ -148,21 +148,30 @@ function Shooter(center, size, color, rotacao) {
 	}
   //reset da nave
 	this.reset = function() {
+		//reseta os contadores
 		this.life = 3;
 		this.pontos = 0;
+		//reposiciona as naves
+		if(rotacao == 0){
+				this.center = {x:500*Math.random() ,y:30 }
+		}else {
+			this.center = {x:500*Math.random() ,y:470 }
+		}
+
 	}
 }
 
 function Barreira(pos, size){
 	this.pos = pos;
 	this.size = size;
-	//this.tag = tag;
 
 	this.draw = function(ctx){
 		ctx.rect(this.pos.x, this.pos.y, this.size.w, this.size.h);
 		ctx.strokeStyle = "black";
+		//ctx.lineWidth = "2";
 		ctx.fillStyle = "red";
 		ctx.fillRect(this.pos.x, this.pos.y, this.size.w, this.size.h);
 		ctx.stroke();
+		//ctx.lineWidth = "0";
 	}
 }
