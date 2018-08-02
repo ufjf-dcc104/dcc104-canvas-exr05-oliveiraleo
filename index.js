@@ -22,6 +22,14 @@ var ganhador = 0;
 //sons
 var musica = new Audio("sound/war.m4a");
 
+var boom = new Audio();
+boom.src = "sound/boom.mp3";
+
+var explode = function(){
+	boom.load();
+	boom.play();
+}
+
 var tiro1 = new Audio();
 tiro1.src = "sound/tiro.mp3";
 var tiro2 = new Audio();
@@ -46,6 +54,7 @@ var colideBarreira = function(shooter, parede){
 			shooter.center.y-(shooter.size.h/2) <= parede.pos.y+parede.size.h){
 		shooter.life--;
 		shooter.reposiciona();
+		explode();
 	}
 }
 
@@ -62,13 +71,7 @@ function start() {
 	const G = -20;
 
 	const PTSMAX = 2; // pontuacao que encerra o jogo
-	//toca a musica de fundo em loop
-	musica.volume = 0;
-	musica.play();
-	musica.addEventListener('ended', function() {
-		this.currentTime = 0;
-		this.play();
-	});
+
 	//variaveis globais
 	var shots = []; var shoot = false;
 	var shots2 = []; var shoot2 = false;
@@ -182,7 +185,13 @@ function start() {
 		colideBarreira(shooter2, parede3);
 		colideBarreira(shooter2, parede4);
 		colideBarreira(shooter2, parede5);
-
+		//toca a musica de fundo em loop
+		musica.volume = 1.0;
+		musica.play();
+		musica.addEventListener('ended', function() {
+			this.currentTime = 0;
+			this.play();
+		});
 		//determina o fim do jogo
 		if (shooter1.pontos >= PTSMAX || shooter2.life == 0) {
 			ganhador = 1;
@@ -199,6 +208,7 @@ function start() {
 		ctx.clearRect(0, 0, WIDTH, HEIGHT);
 		msgInicio.raster(ctx, "Apertem ENTER para começar", 25, HEIGHT/2 );
 	}else if(pause){// exibe a mensagem de jogo pausado
+		musica.pause();
 		msg.raster(ctx, "Apertem P para continuar", (WIDTH/6), HEIGHT/2-parede5.size.h );
 	}
 }
@@ -212,6 +222,7 @@ function start() {
 			shots.push(ball); // adiciona a bala no vetor de tiros
 			ball = null; // apaga a bala auxiliar
 			shoot = true;// bloqueia a repeticao do tiro
+			atira1();
 			e.preventDefault();
 		}if(e.keyCode == 37){ // esquerda player 1
 			shooter1.vang = -100;
@@ -252,6 +263,7 @@ function start() {
 			shots2.push(ball2); // adiciona a bala no vetor de tiros
 			ball2 = null; // apaga a bala auxiliar
 			shoot2 = true;// bloqueia a repeticao do tiro
+			atira2();
 			e.preventDefault();
 		}
 	});
