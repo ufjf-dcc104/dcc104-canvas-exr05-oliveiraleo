@@ -31,7 +31,7 @@ function Shot(x, y, vx, vy, r, dir) {
 			ctx.arc(this.pos.x, this.pos.y, 4, 0, 2 * Math.PI, true);
 		ctx.closePath();
 		ctx.fill();
-		console.log("Desenha");
+		//console.log("Desenha");
 	}
 	//move os tiros
 	this.move = function(dt, g) {
@@ -164,5 +164,19 @@ function Shooter(center, size, color, rotacao) {
 	this.reset = function() {
 		this.life = 3;
 		this.pontos = 0;
+	}
+}
+
+function Barreira(pos, size, tag){
+	this.pos = pos;
+	this.size = size;
+	this.tag = tag;
+
+	this.draw = function(ctx){
+		ctx.rect(this.pos.x, this.pos.y, this.size.w, this.size.h);
+		ctx.strokeStyle = "black";
+		ctx.fillStyle = "red";
+		ctx.fillRect(this.pos.x, this.pos.y, this.size.w, this.size.h);
+		ctx.stroke();
 	}
 }

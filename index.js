@@ -64,9 +64,13 @@ function start() {
 	var shots2 = []; var shoot2 = false;
 
 	var shooter1 = new Shooter({x: WIDTH/2, y: HEIGHT/6}, {w: 25, h: 25}, "black", 0);
-  var shooter2 = new Shooter({x: WIDTH/2, y: HEIGHT-(HEIGHT/6)}, {w: 25, h: 25}, "red", 2*Math.PI);
+  var shooter2 = new Shooter({x: WIDTH/2, y: HEIGHT-(HEIGHT/6)}, {w: 25, h: 25}, "blue", 2*Math.PI);
 	var ball = new Shot(shooter1.ballPos.x, (shooter1.ballPos.y), 0, 0, 12, 0);
   var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, 1);
+
+	//Instancia os obstaculos
+	var parede1 = new Barreira({x: WIDTH/4, y: HEIGHT/6}, {w: 50, h: 50}, 0);
+	var parede2 = new Barreira({x: WIDTH/8, y: HEIGHT/6}, {w: 50, h: 50}, 0);
 
 	var verificaPontos1 = false;
 	var verificaPontos2 = false;
@@ -149,7 +153,7 @@ function start() {
 		//tiros player 1
 		for(cont = 0; cont < shots.length; cont++) {
 			//shots[cont].draw(ctx);
-			shots[cont].move(DT, G);
+			//shots[cont].move(DT, G);
 			//Apaga os tiros que saem da tela
 			if(shots[cont].pos.y < 0 || shots[cont].pos.x < 0 || shots[cont].pos.x > WIDTH || shots[cont].pos.y > HEIGHT){// impõe limites
 				shots.splice(cont, 1);// remove o tiro do vetor
@@ -195,6 +199,9 @@ function start() {
 		//desenha as naves na tela
 		shooter1.draw(ctx);
 		shooter2.draw(ctx);
+		//desenha os obstaculos
+		parede1.draw(ctx);
+		parede2.draw(ctx);
 
 		if (shooter1.pontos >= PTSMAX || shooter2.pontos >= PTSMAX) { // fim de jogo
 			//verifica quem ganhou
@@ -218,7 +225,7 @@ function start() {
 	//controles do jogo
 	addEventListener("keydown", function(e){
 		if(e.keyCode == 32 && !shoot) { // Espaco, tiro player 1
-			ball.pos = {x: shooter1.ballPos.x, y: (shooter1.ballPos.y)}; // marca a posicao da bala
+			ball.pos = {x: shooter1.center.x, y: (shooter1.center.y)}; // marca a posicao da bala
 			ball.setVelocityVector(shooter1.center); // ajusta a velocidade da bala
 			shots.push(ball); // adiciona a bala no vetor de tiros
 			ball = null; // apaga a bala auxiliar
