@@ -137,7 +137,6 @@ function Shooter(center, size, color, rotacao) {
 		this.ballPos.y = this.center.y * Math.cos(this.angle);
 		//move a nave
 
-
 		this.angle = this.angle + this.vang*dt;
 		this.vx = this.am*Math.cos(Math.PI*this.angle/180);
 		this.vy = this.am*Math.sin(Math.PI*this.angle/180);
@@ -146,19 +145,6 @@ function Shooter(center, size, color, rotacao) {
 		this.center.x += this.vx * dt;
     this.center.y += this.vy * dt;
 		this.angle = this.angle + this.vang*dt;
-
-/*
-		this.angle = this.angle + this.vang*dt;
-		this.ax = this.am*Math.cos(Math.PI*this.angle/180);
-		this.ay = this.am*Math.sin(Math.PI*this.angle/180);
-
-		this.vx = this.vx + this.ax*dt;
-		this.vy = this.vy + (this.ay+this.g)*dt;
-
-    this.center.x += this.vx * dt;
-    this.center.y += this.vy * dt;
-
-		*/
 	}
   //reset da nave
 	this.reset = function() {
@@ -167,10 +153,10 @@ function Shooter(center, size, color, rotacao) {
 	}
 }
 
-function Barreira(pos, size, tag){
+function Barreira(pos, size){
 	this.pos = pos;
 	this.size = size;
-	this.tag = tag;
+	//this.tag = tag;
 
 	this.draw = function(ctx){
 		ctx.rect(this.pos.x, this.pos.y, this.size.w, this.size.h);

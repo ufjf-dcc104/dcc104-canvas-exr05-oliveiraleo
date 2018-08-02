@@ -69,8 +69,8 @@ function start() {
   var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, 1);
 
 	//Instancia os obstaculos
-	var parede1 = new Barreira({x: WIDTH/4, y: HEIGHT/6}, {w: 50, h: 50}, 0);
-	var parede2 = new Barreira({x: WIDTH/8, y: HEIGHT/6}, {w: 50, h: 50}, 0);
+	var parede1 = new Barreira({x: WIDTH/4, y: HEIGHT/6}, {w: 50, h: 50});
+	var parede2 = new Barreira({x: WIDTH/8, y: HEIGHT/6}, {w: 50, h: 50});
 
 	var verificaPontos1 = false;
 	var verificaPontos2 = false;
@@ -120,34 +120,6 @@ function start() {
 		texto2.raster(ctx, "Pontos: " + shooter2.pontos, WIDTH-110, 40);
 		texto2.raster(ctx, "Vidas:" + shooter2.life, WIDTH-100, 60);
 
-		/*for(var i = 0; i < shots.length; i++){
-			if(((shots[i].pos.x >= shooter2.center.x-shooter2.size.w) && (shots[i].pos.x <= shooter2.center.x+shooter2.size.w)) &&
-			((shots[i].pos.y >= shooter2.center.y-shooter2.size.h) && (shots[i].pos.y <= shooter2.center.y+shooter2.size.h)) &&
-			!verificaPontos1){
-				verificaPontos1 = true;
-				if(verificaPontos1){
-					shooter2.life--;
-				}
-			}
-		}
-		if (shooter2.life <= 0) {
-			shooter1.pontos++;
-			shooter2.reset();
-		}
-		for(var i = 0; i < shots2.length; i++){
-			if(((shots2[i].pos.x >= shooter1.center.x-shooter1.size.w) && (shots2[i].pos.x <= shooter1.center.x+shooter1.size.w)) &&
-			((shots2[i].pos.y >= shooter1.center.y-shooter1.size.h) && (shots2[i].pos.y <= shooter1.center.y+shooter1.size.h)) &&
-			!verificaPontos2){
-				verificaPontos2 = true;
-				if(verificaPontos2){
-					shooter1.life--;
-				}
-			}
-		}
-		if (shooter1.life <= 0) {
-			shooter2.pontos++;
-			shooter1.reset();
-		}*/
 		//contadores para o for do tiro
 		var cont, cont2;
 		//tiros player 1
