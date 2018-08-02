@@ -28,8 +28,8 @@ var tiro2 = new Audio();
 tiro2.src = "sound/tiro_forte.mp3";
 
 var atira1 = function(){
-	tiro1.volume = 1.0;
 	tiro1.load();
+	tiro1.volume = 1.0;
 	tiro1.play();
 }
 
@@ -37,6 +37,16 @@ var atira2 = function(){
 	tiro2.volume = 0.2;
 	tiro2.load();
 	tiro2.play();
+}
+//colisao com as barreiras
+var colideBarreira = function(shooter, parede){
+		if(shooter.center.x+(shooter.size.w/2) >= parede.pos.x &&
+			shooter.center.x-(shooter.size.w/2) <= parede.pos.x+parede.size.w &&
+			shooter.center.y+(shooter.size.h/2) >= parede.pos.y &&
+			shooter.center.y-(shooter.size.h/2) <= parede.pos.y+parede.size.h){
+		shooter.life--;
+		shooter.reposiciona();
+	}
 }
 
 //Regra do jogo
@@ -145,7 +155,7 @@ function start() {
 		}
 		//Movimenta as naves
 		shooter1.move(DT);
-    shooter2.move(DT);
+		shooter2.move(DT);
 
 		//desenha os tiros na tela
 		shots.forEach( function(shot) { shot.draw(ctx); } );
@@ -159,6 +169,18 @@ function start() {
 		parede3.draw(ctx);
 		parede4.draw(ctx);
 		parede5.draw(ctx);
+
+		colideBarreira(shooter1, parede1);
+		colideBarreira(shooter1, parede2);
+		colideBarreira(shooter1, parede3);
+		colideBarreira(shooter1, parede4);
+		colideBarreira(shooter1, parede5);
+
+		colideBarreira(shooter2, parede1);
+		colideBarreira(shooter2, parede2);
+		colideBarreira(shooter2, parede3);
+		colideBarreira(shooter2, parede4);
+		colideBarreira(shooter2, parede5);
 
 		if (shooter1.pontos >= PTSMAX || shooter2.pontos >= PTSMAX) { // fim de jogo
 			//verifica quem ganhou
@@ -174,7 +196,7 @@ function start() {
 		ctx.clearRect(0, 0, WIDTH, HEIGHT);
 		msgInicio.raster(ctx, "Apertem ENTER para começar", 25, HEIGHT/2 );
 	}else if(pause){// exibe a mensagem de jogo pausado
-		msg.raster(ctx, "Apertem P para continuar", (WIDTH/6), HEIGHT/2 );
+		msg.raster(ctx, "Apertem P para continuar", (WIDTH/6), HEIGHT/3 );
 	}
 }
 

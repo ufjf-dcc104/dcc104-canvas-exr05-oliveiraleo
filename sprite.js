@@ -104,6 +104,7 @@ function Shooter(center, size, color, rotacao) {
 		ctx.fill();
 		ctx.stroke();
 
+		//mostra o contorno da caixa de colisao
 		if(true){
 	    ctx.strokeStyle = "grey";
 	    ctx.strokeRect(-this.size.w/2, -this.size.h/2, this.size.w, this.size.h);
@@ -114,7 +115,6 @@ function Shooter(center, size, color, rotacao) {
 }
 	//move a nave
 	this.move = function(dt) {
-		//console.log(this.angle);
 		//verifica os limites da tela
 		if (this.center.x < this.size.w/2) {
 			this.center.x = this.size.w/2;
@@ -152,12 +152,15 @@ function Shooter(center, size, color, rotacao) {
 		this.life = 3;
 		this.pontos = 0;
 		//reposiciona as naves
+		this.reposiciona();
+	}
+
+	this.reposiciona = function(){
 		if(rotacao == 0){
 				this.center = {x:500*Math.random() ,y:30 }
 		}else {
 			this.center = {x:500*Math.random() ,y:470 }
 		}
-
 	}
 }
 
