@@ -73,17 +73,17 @@ function start() {
 	var shots = []; var shoot = false;
 	var shots2 = []; var shoot2 = false;
 
-	var shooter1 = new Shooter({x: WIDTH/2, y: HEIGHT/6}, {w: 25, h: 25}, "black", 0);
-  var shooter2 = new Shooter({x: WIDTH/2, y: HEIGHT-(HEIGHT/6)}, {w: 25, h: 25}, "blue", 2*Math.PI);
+	var shooter1 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "black", 0);
+  var shooter2 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "blue", 2*Math.PI);
 	var ball = new Shot(shooter1.ballPos.x, (shooter1.ballPos.y), 0, 0, 12, 0);
   var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, 1);
 
 	//Instancia os obstaculos
-	var parede1 = new Barreira({x: WIDTH/6, y: HEIGHT/6}, {w: 50, h: 50});
-	var parede2 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT/6}, {w: 50, h: 50});
-	var parede3 = new Barreira({x: WIDTH/6, y: HEIGHT-(HEIGHT/4)}, {w: 50, h: 50});
-	var parede4 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT-(HEIGHT/4)}, {w: 50, h: 50});
-	var parede5 = new Barreira({x: (WIDTH/2)-80, y: (HEIGHT/2)-30}, {w: 150, h: 50});
+	var parede1 = new Barreira({x: WIDTH/6, y: HEIGHT/5}, {w: 50, h: 50});
+	var parede2 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT/5}, {w: 50, h: 50});
+	var parede3 = new Barreira({x: WIDTH/6, y: HEIGHT-(HEIGHT/3)}, {w: 50, h: 50});
+	var parede4 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT-(HEIGHT/3)}, {w: 50, h: 50});
+	var parede5 = new Barreira({x: (WIDTH/2)-80, y: (HEIGHT/2)-30}, {w: 250, h: 50});
 
 	var verificaPontos1 = false;
 	var verificaPontos2 = false;
@@ -196,7 +196,7 @@ function start() {
 		ctx.clearRect(0, 0, WIDTH, HEIGHT);
 		msgInicio.raster(ctx, "Apertem ENTER para começar", 25, HEIGHT/2 );
 	}else if(pause){// exibe a mensagem de jogo pausado
-		msg.raster(ctx, "Apertem P para continuar", (WIDTH/6), HEIGHT/3 );
+		msg.raster(ctx, "Apertem P para continuar", (WIDTH/6), HEIGHT/2-parede5.size.h );
 	}
 }
 
