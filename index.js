@@ -15,7 +15,7 @@ var pause = false;
 var inicio = false;
 
 var texto = new Text();
-var texto2 = new Text("Courier", 20, "red");
+var texto2 = new Text("Courier", 20, "blue");
 
 var ganhador = 0;
 
@@ -106,14 +106,15 @@ function start() {
 					msg.raster(ctx, "Player 1 ganhou!", WIDTH/8, HEIGHT/4);
 				}if (ganhador == 2){
 					msg.raster(ctx, "Player 2 ganhou!", WIDTH/8, HEIGHT-HEIGHT/3);
+				}if (shooter1.pontos < PTSMAX && shooter2.pontos < PTSMAX){
+					msg.raster(ctx, "Apertem R para continuar", WIDTH/6, HEIGHT/2 );
+				}else {
+					msg.raster(ctx, "Fim de jogo", WIDTH/3, HEIGHT/2 );
 				}
-				msg.raster(ctx, "Apertem R para continuar", WIDTH/6, HEIGHT/2 );
+
 			}
 		}
 		verificaInicio = true;
-		//reposiciona as naves
-		shooter1.center = {x: WIDTH/2, y: HEIGHT/6};
-		shooter2.center = {x: WIDTH/2, y: HEIGHT-(HEIGHT/6)};
 
 		shooter1.reset();//volta as propriedades do shooter ao padrao do inicio
     shooter2.reset();//volta as propriedades do shooter ao padrao do inicio
@@ -169,7 +170,7 @@ function start() {
 		parede3.draw(ctx);
 		parede4.draw(ctx);
 		parede5.draw(ctx);
-
+		//verifica a colisao com os obstaculos
 		colideBarreira(shooter1, parede1);
 		colideBarreira(shooter1, parede2);
 		colideBarreira(shooter1, parede3);
@@ -182,13 +183,15 @@ function start() {
 		colideBarreira(shooter2, parede4);
 		colideBarreira(shooter2, parede5);
 
-		if (shooter1.pontos >= PTSMAX || shooter2.pontos >= PTSMAX) { // fim de jogo
-			//verifica quem ganhou
-			if (shooter1.pontos >= PTSMAX) {
-				ganhador = 1;
-			}if (shooter2.pontos >= PTSMAX) {
-				ganhador = 2;
-			}
+		//determina o fim do jogo
+		if (shooter1.pontos >= PTSMAX || shooter2.life == 0) {
+			ganhador = 1;
+			shooter1.pontos++;
+			recomeca = false;
+			reset();
+		}if (shooter2.pontos >= PTSMAX || shooter1.life == 0) {
+			ganhador = 2;
+			shooter2.pontos++;
 			recomeca = false;
 			reset();
 		}
@@ -260,7 +263,7 @@ function start() {
 		}if(e.keyCode == 37 || e.keyCode == 39){ //esquerda e direita player 1
 			shooter1.vang = 0;
 		}if (e.keyCode == 38 || e.keyCode == 40) { //cima e baixo player 1
-      shooter1.am = 0;
+			shooter1.am = 0;
     }if (e.keyCode == 87 || e.keyCode == 83) {// W e S
 			shooter2.am = 0;
 		}if (e.keyCode == 65 || e.keyCode == 68) {// A e D

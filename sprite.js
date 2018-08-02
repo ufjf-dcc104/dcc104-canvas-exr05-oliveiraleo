@@ -150,7 +150,6 @@ function Shooter(center, size, color, rotacao) {
 	this.reset = function() {
 		//reseta os contadores
 		this.life = 3;
-		this.pontos = 0;
 		//reposiciona as naves
 		this.reposiciona();
 	}
