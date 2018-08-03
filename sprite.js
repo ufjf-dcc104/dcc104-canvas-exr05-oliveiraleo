@@ -32,8 +32,6 @@ function Shot(x, y, vx, vy, r, dir, angle) {
 			ctx.arc(this.pos.x, this.pos.y, 4, 0, 2 * Math.PI, true);
 		ctx.closePath();
 		ctx.fill();
-		//this.movex();
-		//console.log("Desenha");
 	}
 	//Verifica se o tiro saiu da tela
 	this.isForaTela = function(){
@@ -66,7 +64,7 @@ function Shot(x, y, vx, vy, r, dir, angle) {
 			this.pos.x -= 300 * dt;
 		}
 	}
-
+	//define a direcao do movimento
 	this.move = function(dt){
 		if (this.angle == 90 || this.angle == -270) {
 			this.movexUp(dt);
@@ -222,4 +220,8 @@ function Barreira(pos, size){
 		ctx.stroke();
 		//ctx.lineWidth = "0";
 	}
+
+	/*this.colideTiro = function(tiro){
+		if(tiro.pos.x > )
+	}*/
 }

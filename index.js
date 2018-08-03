@@ -58,6 +58,16 @@ var colideBarreira = function(shooter, parede){
 	}
 }
 
+var colideTiro = function(tiro, parede){
+	if(tiro.pos.x+(tiro.radius/2) >= parede.pos.x &&
+		tiro.pos.x-(tiro.radius/2) <= parede.pos.x+parede.size.w &&
+		tiro.pos.y+(tiro.radius/2) >= parede.pos.y &&
+		tiro.pos.y-(tiro.radius/2) <= parede.pos.y+parede.size.h){
+			return true;
+		}
+	return false;
+}
+
 //Regra do jogo
 function start() {
 	var canvas = document.getElementById("game");
@@ -146,7 +156,11 @@ function start() {
 			//shots[cont].movex(DT);
 			shots[cont].move(DT);
 			//Apaga os tiros que saem da tela
-			if(shots[cont].pos.y < 0 || shots[cont].pos.x < 0 || shots[cont].pos.x > WIDTH || shots[cont].pos.y > HEIGHT){// impõe limites
+			if(shots[cont].pos.y < 0 ||
+				shots[cont].pos.x < 0 ||
+				shots[cont].pos.x > WIDTH ||
+				shots[cont].pos.y > HEIGHT ||
+				colideTiro(shots[cont], parede1)){// impõe limites no mapa
 				shots.splice(cont, 1);// remove o tiro do vetor
 				verificaPontos1 = false;// liga novamente o contador
 			}
@@ -227,9 +241,9 @@ function start() {
 			ball = null; // apaga a bala auxiliar
 			shoot = true;// bloqueia a repeticao do tiro
 			atira1();
-			console.log("ang " +shooter1.angle);
-			console.log("vx " + shooter1.vx);
-			console.log("vy " +shooter1.vy);
+			//console.log("ang " +shooter1.angle);
+			//console.log("vx " + shooter1.vx);
+			//console.log("vy " +shooter1.vy);
 			e.preventDefault();
 		}if(e.keyCode == 37){ // esquerda player 1
 			//shooter1.vang = -100;
