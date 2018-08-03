@@ -104,8 +104,10 @@ function start() {
 
 	const PTSMAX = 2; // pontuacao que encerra o jogo
 	//variaveis globais
-	var shots = []; var shoot = false;
-	var shots2 = []; var shoot2 = false;
+	var shots = [];
+	var shoot = false;
+	var shots2 = [];
+	var shoot2 = false;
 
 	var shooter1 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "black", 0);
   var shooter2 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "blue", 2*Math.PI);
@@ -176,13 +178,7 @@ function start() {
 		//tiros player 1
 		for(cont = 0; cont < shots.length; cont++) {
 			shots[cont].move(DT);
-			//shots[cont].draw(ctx);
-			//if(shooter1.angle == 90 || shooter1.angleAux == -270)
-			//shots[cont].move(DT, G);
-			//shots[cont].movex(DT);
-			///////shots[cont].move(DT);
-			//Apaga os tiros que saem da tela
-			//cont2++;
+			//Apaga os tiros que bateram em algo
 			if(shots[cont].pos.y < 0 ||
 				shots[cont].pos.x < 0 ||
 				shots[cont].pos.x > WIDTH ||
@@ -197,13 +193,20 @@ function start() {
 				shots.splice(cont, 1);// remove o tiro do vetor
 				verificaPontos1 = false;// liga novamente o contador
 			}
-		//cont2 = 0;
 		}
 		//tiros player 2
 		for(cont2 = 0; cont2 < shots2.length; cont2++) {
-			shots2[cont2].move(DT, G);
+			shots2[cont2].move(DT);
 			//Apaga os tiros que saem da tela
-			if(shots2[cont2].pos.y < 0 || shots2[cont2].pos.x < 0 || shots2[cont2].pos.x > WIDTH || shots2[cont2].pos.y > HEIGHT){// impõe limites
+			if(shots2[cont2].pos.y < 0 ||
+				shots2[cont2].pos.x < 0 ||
+				shots2[cont2].pos.x > WIDTH ||
+				shots2[cont2].pos.y > HEIGHT ||
+				colideTiroParede(shots2[cont2], paredes[0]) ||
+				colideTiroParede(shots2[cont2], paredes[1]) ||
+				colideTiroParede(shots2[cont2], paredes[2]) ||
+				colideTiroParede(shots2[cont2], paredes[3]) ||
+				colideTiroParede(shots2[cont2], paredes[4])) {
 				shots2.splice(cont2, 1);// remove o tiro do vetor
 				verificaPontos2 = false;// liga novamente o contador
 			}
@@ -221,30 +224,15 @@ function start() {
 		for(cont = 0; cont < paredes.length; cont++){
 			paredes[cont].draw(ctx);
 		}
-		/*parede1.draw(ctx);
-		parede2.draw(ctx);
-		parede3.draw(ctx);
-		parede4.draw(ctx);
-		parede5.draw(ctx);*/
-		//verifica a colisao da nave com os obstaculos
+		//verifica a colisao das naves com os obstaculos
 		for(cont = 0; cont < paredes.length; cont++){
 			colideBarreira(shooter1, paredes[cont]);
 		}
+		for(cont2 = 0; cont2 < paredes.length; cont2++){
+			colideBarreira(shooter2, paredes[cont2]);
+		}
 		//verifica a colisao entre as naves
 		colideNave(shooter1, shooter2);
-
-
-		/*colideBarreira(shooter1, parede1);
-		colideBarreira(shooter1, parede2);
-		colideBarreira(shooter1, parede3);
-		colideBarreira(shooter1, parede4);
-		colideBarreira(shooter1, parede5);*/
-
-		colideBarreira(shooter2, parede1);
-		colideBarreira(shooter2, parede2);
-		colideBarreira(shooter2, parede3);
-		colideBarreira(shooter2, parede4);
-		colideBarreira(shooter2, parede5);
 		//toca a musica de fundo em loop
 		musica.volume = 1.0;
 		musica.play();
@@ -287,25 +275,16 @@ function start() {
 			}if (shooter1.angle == 0) {
 				ball.pos = {x: shooter1.center.x-shooter1.size.w/2, y: shooter1.center.y};
 			}
-			//ball.pos = {x: shooter1.center.x, y: (shooter1.center.y)-shooter1.size.h/2}; // marca a posicao da bala
-			//ball.setVelocityVector(shooter1.center, shooter1.angle, DT); // ajusta a velocidade da bala
 			shots.push(ball); // adiciona a bala no vetor de tiros
 			ball = null; // apaga a bala auxiliar
 			shoot = true;// bloqueia a repeticao do tiro
 			atira1();
-			//console.log("ang " +shooter1.angle);
-			//console.log("vx " + shooter1.vx);
-			//console.log("vy " +shooter1.vy);
 			e.preventDefault();
 		}if(e.keyCode == 37){ // esquerda player 1
-			//shooter1.vang = -100;
 			shooter1.angle -= 90;
-			//shooter1.vx = -100;
 			e.preventDefault();
 		}if(e.keyCode == 39){ // direita player 1
-			//shooter1.vang = 100;
 			shooter1.angle += 90;
-			//shooter1.vx = 100;
 			e.preventDefault();
 		}if (e.keyCode == 38) { // cima player 1
 			shooter1.am = -100;
@@ -327,14 +306,22 @@ function start() {
 			shooter2.am = 100;
 			e.preventDefault();
 		}if (e.keyCode == 65) {// A
-			shooter2.vang = -100;
+			shooter2.angle -= 90;
 			e.preventDefault();
 		}if (e.keyCode == 68) {// D
-			shooter2.vang = 100;
+			shooter2.angle += 90;
 			e.preventDefault();
 		}if (e.keyCode == 16){// Shift Esq
-			ball2.pos = {x: shooter2.ballPos.x, y: shooter2.ballPos.y}; // marca a posicao da bala
-			ball2.setVelocityVector(shooter2.center); // ajusta a velocidade da bala
+			var ball2 = new Shot(shooter2.ballPos.x, (shooter2.ballPos.y), 0, 0, 12, 2*Math.PI, shooter2.angle);
+			if (shooter2.angle == 90 || shooter2.angle == -270) {
+				ball2.pos = {x: shooter2.center.x, y: (shooter2.center.y)-shooter2.size.h/2};
+			}if (shooter2.angle == -90 || shooter2.angle == 270) {
+				ball2.pos = {x: shooter2.center.x, y: (shooter2.center.y)+shooter2.size.h/2};
+			}if (shooter2.angle == 180 || shooter2.angle == -180) {
+				ball2.pos = {x: shooter2.center.x+shooter2.size.w/2, y: shooter2.center.y};
+			}if (shooter2.angle == 0) {
+				ball2.pos = {x: shooter2.center.x-shooter2.size.w/2, y: shooter2.center.y};
+			}
 			shots2.push(ball2); // adiciona a bala no vetor de tiros
 			ball2 = null; // apaga a bala auxiliar
 			shoot2 = true;// bloqueia a repeticao do tiro
@@ -345,7 +332,6 @@ function start() {
 
 	addEventListener("keyup", function(e){
 		if(e.keyCode == 32) { // Espaco player 1
-			ball = new Shot(shooter1.ballPos.x, shooter1.ballPos.y, 325, 0, 12, 0);// prepara a nova bala
 			shoot = false;
 		}if(e.keyCode == 37 || e.keyCode == 39){ //esquerda e direita player 1
 			shooter1.vang = 0;
@@ -356,7 +342,6 @@ function start() {
 		}if (e.keyCode == 65 || e.keyCode == 68) {// A e D
 			shooter2.vang = 0;
 		}if (e.keyCode == 16) {// Shift Esq
-			ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 325, 0, 12, 1);// prepara a nova bala
 			shoot2 = false;
 		}
 	});
