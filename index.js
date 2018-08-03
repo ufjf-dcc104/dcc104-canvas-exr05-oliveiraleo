@@ -225,11 +225,13 @@ function start() {
 			atira1();
 			e.preventDefault();
 		}if(e.keyCode == 37){ // esquerda player 1
-			shooter1.vang = -100;
+			//shooter1.vang = -100;
+			shooter1.angle -= 90;
 			//shooter1.vx = -100;
 			e.preventDefault();
 		}if(e.keyCode == 39){ // direita player 1
-			shooter1.vang = 100;
+			//shooter1.vang = 100;
+			shooter1.angle += 90;
 			//shooter1.vx = 100;
 			e.preventDefault();
 		}if (e.keyCode == 38) { // cima player 1

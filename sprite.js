@@ -137,14 +137,14 @@ function Shooter(center, size, color, rotacao) {
 		this.ballPos.y = this.center.y * Math.cos(this.angle);
 		//move a nave
 
-		this.angle = this.angle + this.vang*dt;
+		//this.angle = this.angle + this.vang*dt;
 		this.vx = this.am*Math.cos(Math.PI*this.angle/180);
 		this.vy = this.am*Math.sin(Math.PI*this.angle/180);
 		this.vy = this.vy + this.ay*dt;
 		this.vx = this.vx + this.ax*dt;
 		this.center.x += this.vx * dt;
     this.center.y += this.vy * dt;
-		this.angle = this.angle + this.vang*dt;
+		//this.angle = this.angle + this.vang*dt;
 	}
   //reset da nave
 	this.reset = function() {
