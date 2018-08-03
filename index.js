@@ -92,11 +92,17 @@ function start() {
   var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, 1);
 
 	//Instancia os obstaculos
+	var paredes = [];
 	var parede1 = new Barreira({x: WIDTH/6, y: HEIGHT/5}, {w: 50, h: 50});
 	var parede2 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT/5}, {w: 50, h: 50});
 	var parede3 = new Barreira({x: WIDTH/6, y: HEIGHT-(HEIGHT/3)}, {w: 50, h: 50});
 	var parede4 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT-(HEIGHT/3)}, {w: 50, h: 50});
 	var parede5 = new Barreira({x: (WIDTH/2)-80, y: (HEIGHT/2)-30}, {w: 250, h: 50});
+	paredes.push(parede1);
+	paredes.push(parede2);
+	paredes.push(parede3);
+	paredes.push(parede4);
+	paredes.push(parede5);
 
 	var verificaPontos1 = false;
 	var verificaPontos2 = false;
@@ -191,11 +197,14 @@ function start() {
 		parede4.draw(ctx);
 		parede5.draw(ctx);
 		//verifica a colisao com os obstaculos
-		colideBarreira(shooter1, parede1);
+		for(cont = 0; cont < paredes.length; cont++){
+			colideBarreira(shooter1, paredes[cont]);
+		}
+		/*colideBarreira(shooter1, parede1);
 		colideBarreira(shooter1, parede2);
 		colideBarreira(shooter1, parede3);
 		colideBarreira(shooter1, parede4);
-		colideBarreira(shooter1, parede5);
+		colideBarreira(shooter1, parede5);*/
 
 		colideBarreira(shooter2, parede1);
 		colideBarreira(shooter2, parede2);
