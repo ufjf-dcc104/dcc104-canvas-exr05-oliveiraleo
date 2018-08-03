@@ -78,7 +78,7 @@ function start() {
 
 	var shooter1 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "black", 0);
   var shooter2 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "blue", 2*Math.PI);
-	var ball = new Shot(shooter1.ballPos.x, (shooter1.ballPos.y), 0, 0, 12, 0);
+	//var ball = new Shot(shooter1.ballPos.x, (shooter1.ballPos.y), 0, 0, 12, 0);
   var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, 1);
 
 	//Instancia os obstaculos
@@ -141,7 +141,10 @@ function start() {
 		//tiros player 1
 		for(cont = 0; cont < shots.length; cont++) {
 			//shots[cont].draw(ctx);
+			//if(shooter1.angle == 90 || shooter1.angleAux == -270)
 			//shots[cont].move(DT, G);
+			//shots[cont].movex(DT);
+			shots[cont].move(DT);
 			//Apaga os tiros que saem da tela
 			if(shots[cont].pos.y < 0 || shots[cont].pos.x < 0 || shots[cont].pos.x > WIDTH || shots[cont].pos.y > HEIGHT){// impõe limites
 				shots.splice(cont, 1);// remove o tiro do vetor
@@ -217,12 +220,16 @@ function start() {
 	//controles do jogo
 	addEventListener("keydown", function(e){
 		if(e.keyCode == 32 && !shoot) { // Espaco, tiro player 1
+			var ball = new Shot(shooter1.ballPos.x, (shooter1.ballPos.y), 0, 0, 12, 0, shooter1.angle);
 			ball.pos = {x: shooter1.center.x, y: (shooter1.center.y)}; // marca a posicao da bala
-			ball.setVelocityVector(shooter1.center); // ajusta a velocidade da bala
+			//ball.setVelocityVector(shooter1.center, shooter1.angle, DT); // ajusta a velocidade da bala
 			shots.push(ball); // adiciona a bala no vetor de tiros
 			ball = null; // apaga a bala auxiliar
 			shoot = true;// bloqueia a repeticao do tiro
 			atira1();
+			console.log("ang " +shooter1.angle);
+			console.log("vx " + shooter1.vx);
+			console.log("vy " +shooter1.vy);
 			e.preventDefault();
 		}if(e.keyCode == 37){ // esquerda player 1
 			//shooter1.vang = -100;

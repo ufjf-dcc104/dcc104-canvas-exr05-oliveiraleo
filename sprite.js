@@ -19,10 +19,11 @@ function Size(w, h) {
 }
 
 //tiros
-function Shot(x, y, vx, vy, r, dir) {
+function Shot(x, y, vx, vy, r, dir, angle) {
 	this.pos = {x, y};
 	this.vel = {vx, vy};
 	this.radius = r;
+	this.angle = angle;
 	//desenha os tiros
 	this.draw = function(ctx) {
 		ctx.fillStyle   = "red";
@@ -31,23 +32,64 @@ function Shot(x, y, vx, vy, r, dir) {
 			ctx.arc(this.pos.x, this.pos.y, 4, 0, 2 * Math.PI, true);
 		ctx.closePath();
 		ctx.fill();
+		//this.movex();
 		//console.log("Desenha");
 	}
+	//Verifica se o tiro saiu da tela
+	this.isForaTela = function(){
+		if(this.pos.y < 0 || this.pos.x < 0 || this.pos.x > 500 || this.pos.y > 500){
+			return true;
+		}
+		return false;
+	}
 	//move os tiros
-	this.move = function(dt, g) {
+	this.movexUp = function(dt){
+		if (!(this.isForaTela())) {
+			this.pos.y -= 300 * dt;
+		}
+	}
 
-		//this.pos = {x: this.ballPos.x, y: this.ballPos.y}
-		//if(dir == 0){
-			this.pos.x += this.vel.vx * dt;
-			this.pos.y += this.vel.vy * dt;
-		//}else if (dir == 1) {
-			//this.pos.x += this.vel.vx * dt;
-			//this.pos.y += this.vel.vy * dt;
-		//}
-		console.log(this.pos);
+	this.movexDown = function(dt){
+		if (!(this.isForaTela())) {
+			this.pos.y += 300 * dt;
+		}
+	}
+
+	this.moveyDir = function(dt){
+		if (!(this.isForaTela())) {
+			this.pos.x += 300 * dt;
+		}
+	}
+
+	this.moveyEsq = function(dt){
+		if (!(this.isForaTela())) {
+			this.pos.x -= 300 * dt;
+		}
+	}
+
+	this.move = function(dt){
+		if (this.angle == 90 || this.angle == -270) {
+			this.movexUp(dt);
+		}if (this.angle == -90 || this.angle == 270) {
+			this.movexDown(dt);
+		}if (this.angle == 180 || this.angle == -180) {
+			this.moveyDir(dt);
+		}if (this.angle == 0) {
+			this.moveyEsq(dt);
+		}
+	}
+
+	/*this.move = function(dt, g, angle) {
+		//const angleAux = angle;
+		if(this.angleAux == 90 || this.angleAux == -270){
+			//this.pos.x += 0*200 * dt;
+			//this.pos.y += 200 * dt;
+			this.movex(dt);
+		}
+		//console.log(angleAux);
 	}
 	//cria o vetor de velocidade do tiro
-	this.setVelocityVector = function(o, _mag) {
+	this.setVelocityVector = function(o, ang, dt, _mag) {
 		if(dir == 0){
 			var mag = _mag || 325;
 		}if (dir == 1) {
@@ -60,8 +102,9 @@ function Shot(x, y, vx, vy, r, dir) {
 		this.vel = {vx: (d.x - o.x)/norm, vy: (d.y - o.y)/norm};
 		this.vel.vx *= mag;
 		this.vel.vy *= mag;
-		console.log(this.vel);
-	}
+		//this.movex(dt);
+		//console.log(this.vel);
+	}*/
 }
 
 //naves
@@ -83,7 +126,7 @@ function Shooter(center, size, color, rotacao) {
 	this.ay = 0;
 	this.am = 0;
 	this.angle = 90;
-	this.vang = 0;
+	//this.vang = 0;
 
 	this.ballPos = {x: this.center.x, y: this.center.y - this.size.h / 2};
 	//desenha a nave
@@ -125,7 +168,7 @@ function Shooter(center, size, color, rotacao) {
 		}if (this.center.y > 500-this.size.h/2) {
 			this.center.y = 500-this.size.h/2;
 		}
-		if(this.angle > 360 || this.angle < -360){
+		if(this.angle >= 360 || this.angle <= -360){
 			this.angle = 0;
 		}
 
@@ -133,8 +176,11 @@ function Shooter(center, size, color, rotacao) {
 		//this.ballPos.x = this.center.x + (this.size.h / 2) * Math.sin(this.angle);
 		//this.ballPos.y = this.center.y + (this.size.h / 2) * Math.cos(this.angle);
 
-		this.ballPos.x = this.center.x * Math.tan(this.size.h*(this.size.w/2));
-		this.ballPos.y = this.center.y * Math.cos(this.angle);
+		//this.ballPos.x = this.center.x * Math.tan(this.size.h*(this.size.w/2));
+		//this.ballPos.y = this.center.y * Math.cos(this.angle);
+
+		//this.ballPos.x = this.center.x * Math.tan(this.angle);
+		//this.ballPos.y = this.center.y * Math.cos(this.angle);
 		//move a nave
 
 		//this.angle = this.angle + this.vang*dt;
