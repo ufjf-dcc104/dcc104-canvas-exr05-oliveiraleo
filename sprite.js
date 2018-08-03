@@ -6,30 +6,19 @@ const PI6	  = Math.PI / 6.0;
 const PI12	  = Math.PI / 12.0;
 const RAD4DEG = Math.PI / 180.0;
 const DEG4RAD = 180.0 / Math.PI;
-
-//Posicao barra
-function Point(x, y) {
-	this.x = x;
-	this.y = y;
-}
-//Tamanho barra
-function Size(w, h) {
-	this.w = w;
-	this.h = h;
-}
-
 //tiros
 function Shot(x, y, vx, vy, r, dir, angle) {
 	this.pos = {x, y};
 	this.vel = {vx, vy};
-	this.radius = r;
-	this.angle = angle;
+	this.radius = r; //raio da circunferencia
+	this.angle = angle; //angulo do movimento do tiro
 	//desenha os tiros
 	this.draw = function(ctx) {
-		ctx.fillStyle   = "red";
+		ctx.fillStyle   = "DarkSlateGrey ";
 		ctx.strokeStyle = "black";
+		//desenha a circunferencia
 		ctx.beginPath();
-			ctx.arc(this.pos.x, this.pos.y, 4, 0, 2 * Math.PI, true);
+			ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);// coordenadas, raio, ang inicial, ang final (arco)
 		ctx.closePath();
 		ctx.fill();
 	}
@@ -76,41 +65,10 @@ function Shot(x, y, vx, vy, r, dir, angle) {
 			this.moveyEsq(dt);
 		}
 	}
-
-	/*this.move = function(dt, g, angle) {
-		//const angleAux = angle;
-		if(this.angleAux == 90 || this.angleAux == -270){
-			//this.pos.x += 0*200 * dt;
-			//this.pos.y += 200 * dt;
-			this.movex(dt);
-		}
-		//console.log(angleAux);
-	}
-	//cria o vetor de velocidade do tiro
-	this.setVelocityVector = function(o, ang, dt, _mag) {
-		if(dir == 0){
-			var mag = _mag || 325;
-		}if (dir == 1) {
-			var mag = _mag || 325;
-		}
-
-		var d = this.pos;
-		var norm = Math.sqrt( Math.pow(d.x - o.x, 2) + Math.pow(o.y - d.y, 2) );
-
-		this.vel = {vx: (d.x - o.x)/norm, vy: (d.y - o.y)/norm};
-		this.vel.vx *= mag;
-		this.vel.vy *= mag;
-		//this.movex(dt);
-		//console.log(this.vel);
-	}*/
 }
-
 //naves
 function Shooter(center, size, color, rotacao) {
 	this.center = center || {x: 0, y: 0};
-	//this.x = 0;
-	//this.y = 0;
-	//this.center = center;
 	this.size  = size || {w: 50, h: 50};
 	this.theta = 0;
 	this.omega = 0;
@@ -118,13 +76,11 @@ function Shooter(center, size, color, rotacao) {
   this.vx = 0;
   this.vy = 0;
 	this.color = " ";
-	//this.rotacao = rotacao;
 	this.pontos = 0;
 	this.ax = 0;
 	this.ay = 0;
-	this.am = 0;
+	this.am = 0; //aceleracao de movimento
 	this.angle = 90;
-	//this.vang = 0;
 
 	this.ballPos = {x: this.center.x, y: this.center.y - this.size.h / 2};
 	//desenha a nave
@@ -134,25 +90,22 @@ function Shooter(center, size, color, rotacao) {
 		ctx.save();
 		ctx.translate(this.center.x, this.center.y);
 		ctx.rotate(this.angle*2*Math.PI/360);
-		//cor
+		//define a cor
 		ctx.fillStyle = color;
 		ctx.strokeStyle = "#00ff26";
-		ctx.beginPath();
+		ctx.beginPath();//desenha o shooter
 			ctx.moveTo(this.size.w / 2, this.size.h / 2);
 			ctx.lineTo(-this.size.w / 2,  this.size.h / 32);
 			ctx.lineTo(this.size.w / 2, -this.size.h / 2);
 		ctx.closePath();
 		ctx.fill();
 		ctx.stroke();
-
 		//mostra o contorno da caixa de colisao
 		if(true){
 	    ctx.strokeStyle = "grey";
 	    ctx.strokeRect(-this.size.w/2, -this.size.h/2, this.size.w, this.size.h);
 	  }
-
-		ctx.restore();
-
+	ctx.restore();
 }
 	//move a nave
 	this.move = function(dt) {
@@ -169,31 +122,17 @@ function Shooter(center, size, color, rotacao) {
 		if(this.angle >= 360 || this.angle <= -360){
 			this.angle = 0;
 		}
-
- 		//posiciona o tiro na ponta da nave e define a direcao
-		//this.ballPos.x = this.center.x + (this.size.h / 2) * Math.sin(this.angle);
-		//this.ballPos.y = this.center.y + (this.size.h / 2) * Math.cos(this.angle);
-
-		//this.ballPos.x = this.center.x * Math.tan(this.size.h*(this.size.w/2));
-		//this.ballPos.y = this.center.y * Math.cos(this.angle);
-
-		//this.ballPos.x = this.center.x * Math.tan(this.angle);
-		//this.ballPos.y = this.center.y * Math.cos(this.angle);
-		//move a nave
-
-		//this.angle = this.angle + this.vang*dt;
 		this.vx = this.am*Math.cos(Math.PI*this.angle/180);
 		this.vy = this.am*Math.sin(Math.PI*this.angle/180);
 		this.vy = this.vy + this.ay*dt;
 		this.vx = this.vx + this.ax*dt;
 		this.center.x += this.vx * dt;
     this.center.y += this.vy * dt;
-		//this.angle = this.angle + this.vang*dt;
 	}
   //reset da nave
 	this.reset = function() {
 		//reseta os contadores
-		this.life = 3;
+		this.life = 5;
 		//reposiciona as naves
 		this.reposiciona();
 	}
@@ -220,8 +159,4 @@ function Barreira(pos, size){
 		ctx.stroke();
 		//ctx.lineWidth = "0";
 	}
-
-	/*this.colideTiro = function(tiro){
-		if(tiro.pos.x > )
-	}*/
 }

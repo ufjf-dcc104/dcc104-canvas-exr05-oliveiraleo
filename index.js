@@ -112,12 +112,12 @@ function start() {
 	var shooter1 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "black", 0);
   var shooter2 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "blue", 2*Math.PI);
 	//var ball = new Shot(shooter1.ballPos.x, (shooter1.ballPos.y), 0, 0, 12, 0);
-  var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, 1);
+  //var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, 1);
 	//Instancia os obstaculos
 	var parede1 = new Barreira({x: WIDTH/6, y: HEIGHT/5}, {w: 50, h: 50});
-	var parede2 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT/5}, {w: 50, h: 50});
+	var parede2 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT/6}, {w: 50, h: 50});
 	var parede3 = new Barreira({x: WIDTH/6, y: HEIGHT-(HEIGHT/3)}, {w: 50, h: 50});
-	var parede4 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT-(HEIGHT/3)}, {w: 50, h: 50});
+	var parede4 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT-(HEIGHT/4)}, {w: 50, h: 50});
 	var parede5 = new Barreira({x: (WIDTH/2)-80, y: (HEIGHT/2)-30}, {w: 250, h: 50});
 
 	var verificaPontos1 = false;
@@ -138,9 +138,9 @@ function start() {
 		if(!recomeca){
 			if (verificaInicio) {
 				if (ganhador == 1){
-					msg.raster(ctx, "Player 1 ganhou!", WIDTH/8, HEIGHT/4);
+					msg.raster(ctx, "Player 1 ganhou a rodada!", WIDTH/8, HEIGHT/4);
 				}if (ganhador == 2){
-					msg.raster(ctx, "Player 2 ganhou!", WIDTH/8, HEIGHT-HEIGHT/3);
+					msg.raster(ctx, "Player 2 ganhou a rodada!", WIDTH/8, HEIGHT-HEIGHT/3);
 				}if (shooter1.pontos < PTSMAX && shooter2.pontos < PTSMAX){
 					msg.raster(ctx, "Apertem R para continuar", WIDTH/6, HEIGHT/2 );
 				}else {
@@ -188,7 +188,6 @@ function start() {
 				colideTiroParede(shots[cont], paredes[2]) ||
 				colideTiroParede(shots[cont], paredes[3]) ||
 				colideTiroParede(shots[cont], paredes[4]) ||
-				colideTiros(shooter1, shots[cont]) ||
 				colideTiros(shooter2, shots[cont])) {// impõe limites no mapa
 				shots.splice(cont, 1);// remove o tiro do vetor
 				verificaPontos1 = false;// liga novamente o contador
@@ -206,7 +205,8 @@ function start() {
 				colideTiroParede(shots2[cont2], paredes[1]) ||
 				colideTiroParede(shots2[cont2], paredes[2]) ||
 				colideTiroParede(shots2[cont2], paredes[3]) ||
-				colideTiroParede(shots2[cont2], paredes[4])) {
+				colideTiroParede(shots2[cont2], paredes[4]) ||
+				colideTiros(shooter1, shots2[cont2])) {
 				shots2.splice(cont2, 1);// remove o tiro do vetor
 				verificaPontos2 = false;// liga novamente o contador
 			}
@@ -265,7 +265,7 @@ function start() {
 	//controles do jogo
 	addEventListener("keydown", function(e){
 		if(e.keyCode == 32 && !shoot) { // Espaco, tiro player 1
-			var ball = new Shot(shooter1.ballPos.x, (shooter1.ballPos.y), 0, 0, 12, 0, shooter1.angle);
+			var ball = new Shot(shooter1.ballPos.x, (shooter1.ballPos.y), 0, 0, 4, 0, shooter1.angle);
 			if (shooter1.angle == 90 || shooter1.angle == -270) {
 				ball.pos = {x: shooter1.center.x, y: (shooter1.center.y)-shooter1.size.h/2};
 			}if (shooter1.angle == -90 || shooter1.angle == 270) {
@@ -312,7 +312,7 @@ function start() {
 			shooter2.angle += 90;
 			e.preventDefault();
 		}if (e.keyCode == 16){// Shift Esq
-			var ball2 = new Shot(shooter2.ballPos.x, (shooter2.ballPos.y), 0, 0, 12, 2*Math.PI, shooter2.angle);
+			var ball2 = new Shot(shooter2.ballPos.x, (shooter2.ballPos.y), 0, 0, 4, 2*Math.PI, shooter2.angle);
 			if (shooter2.angle == 90 || shooter2.angle == -270) {
 				ball2.pos = {x: shooter2.center.x, y: (shooter2.center.y)-shooter2.size.h/2};
 			}if (shooter2.angle == -90 || shooter2.angle == 270) {
