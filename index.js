@@ -58,7 +58,7 @@ var colideBarreira = function(shooter, parede){
 	}
 }
 //colisao do tiro com as barreiras
-var colideTiro = function(tiro, parede){
+var colideTiroParede = function(tiro, parede){
 	if(tiro.pos.x+(tiro.radius/2) >= parede.pos.x &&
 		tiro.pos.x-(tiro.radius/2) <= parede.pos.x+parede.size.w &&
 		tiro.pos.y+(tiro.radius/2) >= parede.pos.y &&
@@ -73,12 +73,22 @@ var colideNave = function(s1, s2){
 		s1.center.x-(s1.size.w/2) <= s2.center.x+(s2.size.w/2) &&
 		s1.center.y+(s1.size.h/2) >= s2.center.y-(s2.size.h/2) &&
 		s1.center.y-(s1.size.h/2) <= s2.center.y+(s2.size.h/2)){
-			//console.log("ok");
 			s1.reposiciona();
 			s1.life--;
 			s2.reposiciona();
 			s2.life--;
 		}
+}
+
+var colideTiros = function(nave, tiro){
+	if(nave.center.x+(nave.size.w/2) >= tiro.pos.x &&
+		nave.center.x-(nave.size.w/2) <= tiro.pos.x &&
+		nave.center.y+(nave.size.h/2) >= tiro.pos.y &&
+		nave.center.y-(nave.size.h/2) <= tiro.pos.y){
+			nave.life--;
+			return true;
+		}
+	return false;
 }
 //Regra do jogo
 function start() {
@@ -146,15 +156,14 @@ function start() {
 	var loop = function() {
 		if(inicio && !pause && recomeca){
 		ctx.clearRect(0, 0, WIDTH, HEIGHT);
-		colideNave(shooter1, shooter2);
 		//texto da tela do jogo
 		texto.raster(ctx, "Player 1", 17, 20);
 		texto.raster(ctx, "Pontos: " + shooter1.pontos, 10, 40);
-		texto.raster(ctx, "Vidas:" + shooter1.life, 10, 60);
+		texto.raster(ctx, "Energia:" + shooter1.life, 10, 60);
 
-		texto2.raster(ctx, "Player 2", WIDTH-105, 20);
+		texto2.raster(ctx, "Player 2", WIDTH-103, 20);
 		texto2.raster(ctx, "Pontos: " + shooter2.pontos, WIDTH-110, 40);
-		texto2.raster(ctx, "Vidas:" + shooter2.life, WIDTH-100, 60);
+		texto2.raster(ctx, "Energia:" + shooter2.life, WIDTH-110, 60);
 		//popula o vetor de paredes
 		var paredes = [];
 		paredes.push(parede1);
@@ -162,7 +171,7 @@ function start() {
 		paredes.push(parede3);
 		paredes.push(parede4);
 		paredes.push(parede5);
-		//let paredes2 = paredes;
+
 		var cont, cont2;//contadores para o for
 		//tiros player 1
 		for(cont = 0; cont < shots.length; cont++) {
@@ -178,11 +187,13 @@ function start() {
 				shots[cont].pos.x < 0 ||
 				shots[cont].pos.x > WIDTH ||
 				shots[cont].pos.y > HEIGHT ||
-				colideTiro(shots[cont], paredes[0]) ||
-				colideTiro(shots[cont], paredes[1]) ||
-				colideTiro(shots[cont], paredes[2]) ||
-				colideTiro(shots[cont], paredes[3]) ||
-				colideTiro(shots[cont], paredes[4])) {// impõe limites no mapa
+				colideTiroParede(shots[cont], paredes[0]) ||
+				colideTiroParede(shots[cont], paredes[1]) ||
+				colideTiroParede(shots[cont], paredes[2]) ||
+				colideTiroParede(shots[cont], paredes[3]) ||
+				colideTiroParede(shots[cont], paredes[4]) ||
+				colideTiros(shooter1, shots[cont]) ||
+				colideTiros(shooter2, shots[cont])) {// impõe limites no mapa
 				shots.splice(cont, 1);// remove o tiro do vetor
 				verificaPontos1 = false;// liga novamente o contador
 			}
@@ -219,6 +230,10 @@ function start() {
 		for(cont = 0; cont < paredes.length; cont++){
 			colideBarreira(shooter1, paredes[cont]);
 		}
+		//verifica a colisao entre as naves
+		colideNave(shooter1, shooter2);
+
+
 		/*colideBarreira(shooter1, parede1);
 		colideBarreira(shooter1, parede2);
 		colideBarreira(shooter1, parede3);
@@ -263,7 +278,16 @@ function start() {
 	addEventListener("keydown", function(e){
 		if(e.keyCode == 32 && !shoot) { // Espaco, tiro player 1
 			var ball = new Shot(shooter1.ballPos.x, (shooter1.ballPos.y), 0, 0, 12, 0, shooter1.angle);
-			ball.pos = {x: shooter1.center.x, y: (shooter1.center.y)}; // marca a posicao da bala
+			if (shooter1.angle == 90 || shooter1.angle == -270) {
+				ball.pos = {x: shooter1.center.x, y: (shooter1.center.y)-shooter1.size.h/2};
+			}if (shooter1.angle == -90 || shooter1.angle == 270) {
+				ball.pos = {x: shooter1.center.x, y: (shooter1.center.y)+shooter1.size.h/2};
+			}if (shooter1.angle == 180 || shooter1.angle == -180) {
+				ball.pos = {x: shooter1.center.x+shooter1.size.w/2, y: shooter1.center.y};
+			}if (shooter1.angle == 0) {
+				ball.pos = {x: shooter1.center.x-shooter1.size.w/2, y: shooter1.center.y};
+			}
+			//ball.pos = {x: shooter1.center.x, y: (shooter1.center.y)-shooter1.size.h/2}; // marca a posicao da bala
 			//ball.setVelocityVector(shooter1.center, shooter1.angle, DT); // ajusta a velocidade da bala
 			shots.push(ball); // adiciona a bala no vetor de tiros
 			ball = null; // apaga a bala auxiliar
