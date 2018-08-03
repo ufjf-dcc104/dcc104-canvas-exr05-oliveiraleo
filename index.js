@@ -190,7 +190,6 @@ function start() {
 				colideTiroParede(shots[cont], paredes[4]) ||
 				colideTiros(shooter2, shots[cont])) {// impõe limites no mapa
 				shots.splice(cont, 1);// remove o tiro do vetor
-				verificaPontos1 = false;// liga novamente o contador
 			}
 		}
 		//tiros player 2
@@ -208,7 +207,6 @@ function start() {
 				colideTiroParede(shots2[cont2], paredes[4]) ||
 				colideTiros(shooter1, shots2[cont2])) {
 				shots2.splice(cont2, 1);// remove o tiro do vetor
-				verificaPontos2 = false;// liga novamente o contador
 			}
 		}
 		//Movimenta as naves
