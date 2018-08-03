@@ -64,7 +64,7 @@ function Shot(x, y, vx, vy, r, dir, angle) {
 			this.pos.x -= 300 * dt;
 		}
 	}
-	//define a direcao do movimento
+	//define a direcao do movimento do tiro
 	this.move = function(dt){
 		if (this.angle == 90 || this.angle == -270) {
 			this.movexUp(dt);

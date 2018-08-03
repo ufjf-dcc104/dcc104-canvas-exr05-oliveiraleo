@@ -46,7 +46,7 @@ var atira2 = function(){
 	tiro2.load();
 	tiro2.play();
 }
-//colisao com as barreiras
+//colisao do shooter com as barreiras
 var colideBarreira = function(shooter, parede){
 		if(shooter.center.x+(shooter.size.w/2) >= parede.pos.x &&
 			shooter.center.x-(shooter.size.w/2) <= parede.pos.x+parede.size.w &&
@@ -57,7 +57,7 @@ var colideBarreira = function(shooter, parede){
 		explode();
 	}
 }
-
+//colisao do tiro com as barreiras
 var colideTiro = function(tiro, parede){
 	if(tiro.pos.x+(tiro.radius/2) >= parede.pos.x &&
 		tiro.pos.x-(tiro.radius/2) <= parede.pos.x+parede.size.w &&
@@ -67,7 +67,19 @@ var colideTiro = function(tiro, parede){
 		}
 	return false;
 }
-
+//colisao entre naves
+var colideNave = function(s1, s2){
+	if(s1.center.x+(s1.size.w/2) >= s2.center.x-(s2.size.w/2) &&
+		s1.center.x-(s1.size.w/2) <= s2.center.x+(s2.size.w/2) &&
+		s1.center.y+(s1.size.h/2) >= s2.center.y-(s2.size.h/2) &&
+		s1.center.y-(s1.size.h/2) <= s2.center.y+(s2.size.h/2)){
+			//console.log("ok");
+			s1.reposiciona();
+			s1.life--;
+			s2.reposiciona();
+			s2.life--;
+		}
+}
 //Regra do jogo
 function start() {
 	var canvas = document.getElementById("game");
@@ -81,7 +93,6 @@ function start() {
 	const G = -20;
 
 	const PTSMAX = 2; // pontuacao que encerra o jogo
-
 	//variaveis globais
 	var shots = []; var shoot = false;
 	var shots2 = []; var shoot2 = false;
@@ -90,19 +101,12 @@ function start() {
   var shooter2 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "blue", 2*Math.PI);
 	//var ball = new Shot(shooter1.ballPos.x, (shooter1.ballPos.y), 0, 0, 12, 0);
   var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, 1);
-
 	//Instancia os obstaculos
-	var paredes = [];
 	var parede1 = new Barreira({x: WIDTH/6, y: HEIGHT/5}, {w: 50, h: 50});
 	var parede2 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT/5}, {w: 50, h: 50});
 	var parede3 = new Barreira({x: WIDTH/6, y: HEIGHT-(HEIGHT/3)}, {w: 50, h: 50});
 	var parede4 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT-(HEIGHT/3)}, {w: 50, h: 50});
 	var parede5 = new Barreira({x: (WIDTH/2)-80, y: (HEIGHT/2)-30}, {w: 250, h: 50});
-	paredes.push(parede1);
-	paredes.push(parede2);
-	paredes.push(parede3);
-	paredes.push(parede4);
-	paredes.push(parede5);
 
 	var verificaPontos1 = false;
 	var verificaPontos2 = false;
@@ -130,7 +134,6 @@ function start() {
 				}else {
 					msg.raster(ctx, "Fim de jogo", WIDTH/3, HEIGHT/2 );
 				}
-
 			}
 		}
 		verificaInicio = true;
@@ -143,7 +146,7 @@ function start() {
 	var loop = function() {
 		if(inicio && !pause && recomeca){
 		ctx.clearRect(0, 0, WIDTH, HEIGHT);
-
+		colideNave(shooter1, shooter2);
 		//texto da tela do jogo
 		texto.raster(ctx, "Player 1", 17, 20);
 		texto.raster(ctx, "Pontos: " + shooter1.pontos, 10, 40);
@@ -152,24 +155,38 @@ function start() {
 		texto2.raster(ctx, "Player 2", WIDTH-105, 20);
 		texto2.raster(ctx, "Pontos: " + shooter2.pontos, WIDTH-110, 40);
 		texto2.raster(ctx, "Vidas:" + shooter2.life, WIDTH-100, 60);
-
-		var cont, cont2;//contadores para o for do tiro
+		//popula o vetor de paredes
+		var paredes = [];
+		paredes.push(parede1);
+		paredes.push(parede2);
+		paredes.push(parede3);
+		paredes.push(parede4);
+		paredes.push(parede5);
+		//let paredes2 = paredes;
+		var cont, cont2;//contadores para o for
 		//tiros player 1
 		for(cont = 0; cont < shots.length; cont++) {
+			shots[cont].move(DT);
 			//shots[cont].draw(ctx);
 			//if(shooter1.angle == 90 || shooter1.angleAux == -270)
 			//shots[cont].move(DT, G);
 			//shots[cont].movex(DT);
-			shots[cont].move(DT);
+			///////shots[cont].move(DT);
 			//Apaga os tiros que saem da tela
+			//cont2++;
 			if(shots[cont].pos.y < 0 ||
 				shots[cont].pos.x < 0 ||
 				shots[cont].pos.x > WIDTH ||
 				shots[cont].pos.y > HEIGHT ||
-				colideTiro(shots[cont], parede1)){// impõe limites no mapa
+				colideTiro(shots[cont], paredes[0]) ||
+				colideTiro(shots[cont], paredes[1]) ||
+				colideTiro(shots[cont], paredes[2]) ||
+				colideTiro(shots[cont], paredes[3]) ||
+				colideTiro(shots[cont], paredes[4])) {// impõe limites no mapa
 				shots.splice(cont, 1);// remove o tiro do vetor
 				verificaPontos1 = false;// liga novamente o contador
 			}
+		//cont2 = 0;
 		}
 		//tiros player 2
 		for(cont2 = 0; cont2 < shots2.length; cont2++) {
@@ -183,7 +200,6 @@ function start() {
 		//Movimenta as naves
 		shooter1.move(DT);
 		shooter2.move(DT);
-
 		//desenha os tiros na tela
 		shots.forEach( function(shot) { shot.draw(ctx); } );
 		shots2.forEach( function(shot2) { shot2.draw(ctx); } );
@@ -191,12 +207,15 @@ function start() {
 		shooter1.draw(ctx);
 		shooter2.draw(ctx);
 		//desenha os obstaculos
-		parede1.draw(ctx);
+		for(cont = 0; cont < paredes.length; cont++){
+			paredes[cont].draw(ctx);
+		}
+		/*parede1.draw(ctx);
 		parede2.draw(ctx);
 		parede3.draw(ctx);
 		parede4.draw(ctx);
-		parede5.draw(ctx);
-		//verifica a colisao com os obstaculos
+		parede5.draw(ctx);*/
+		//verifica a colisao da nave com os obstaculos
 		for(cont = 0; cont < paredes.length; cont++){
 			colideBarreira(shooter1, paredes[cont]);
 		}
