@@ -2,7 +2,7 @@
 function Text(font, size, rgb) {
 	this.font = font 	|| "Courier";
 	this.size = size 	|| 20;
-	this.color = rgb 	|| "#000000" ;
+	this.color = rgb 	|| "#ffffff" ;
 
 	this.raster = function(ctx, text, x, y) {
 		ctx.font = "" + this.size + "px " + this.font;
@@ -15,7 +15,8 @@ var pause = false;
 var inicio = false;
 
 var texto = new Text();
-var texto2 = new Text("Courier", 20, "blue");
+var texto2 = new Text("Courier", 20, "DarkSlateGrey");
+var texto3 = new Text("Courier", 20, "red");
 
 var ganhador = 0;
 
@@ -46,6 +47,15 @@ var atira2 = function(){
 	tiro2.load();
 	tiro2.play();
 }
+//Imagens
+var navePlayer1 = new Image();
+navePlayer1.src = "img/ship2.png";
+var navePlayer2 = new Image();
+navePlayer2.src = "img/ship3.png";
+
+var fundo = new Image();
+fundo.src = "img/fundo.jpeg";
+
 //colisao do shooter com as barreiras
 var colideBarreira = function(shooter, parede){
 		if(shooter.center.x+(shooter.size.w/2) >= parede.pos.x &&
@@ -109,8 +119,8 @@ function start() {
 	var shots2 = [];
 	var shoot2 = false;
 
-	var shooter1 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "black", 0);
-  var shooter2 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "blue", 2*Math.PI);
+	var shooter1 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "black", 0, navePlayer1);
+  var shooter2 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "blue", 2*Math.PI, navePlayer2);
 	//var ball = new Shot(shooter1.ballPos.x, (shooter1.ballPos.y), 0, 0, 12, 0);
   //var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, 1);
 	//Instancia os obstaculos
@@ -127,7 +137,7 @@ function start() {
 	var verificaInicio = false;
 
 	var msgInicio = new Text("Courier", 30, "black");
-	var msg = new Text("Courier", 25, "black");
+	var msg = new Text("Courier", 25, "white");
 
 	//reset do jogo
 	function reset() {
@@ -158,10 +168,11 @@ function start() {
 	var loop = function() {
 		if(inicio && !pause && recomeca){
 		ctx.clearRect(0, 0, WIDTH, HEIGHT);
+		ctx.drawImage(fundo, 0, 0);//desenha o fundo
 		//texto da tela do jogo
-		texto.raster(ctx, "Player 1", 17, 20);
-		texto.raster(ctx, "Pontos: " + shooter1.pontos, 10, 40);
-		texto.raster(ctx, "Energia:" + shooter1.life, 10, 60);
+		texto3.raster(ctx, "Player 1", 17, 20);
+		texto3.raster(ctx, "Pontos: " + shooter1.pontos, 10, 40);
+		texto3.raster(ctx, "Energia:" + shooter1.life, 10, 60);
 
 		texto2.raster(ctx, "Player 2", WIDTH-103, 20);
 		texto2.raster(ctx, "Pontos: " + shooter2.pontos, WIDTH-110, 40);

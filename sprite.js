@@ -14,8 +14,8 @@ function Shot(x, y, vx, vy, r, dir, angle) {
 	this.angle = angle; //angulo do movimento do tiro
 	//desenha os tiros
 	this.draw = function(ctx) {
-		ctx.fillStyle   = "DarkSlateGrey ";
-		ctx.strokeStyle = "black";
+		ctx.fillStyle   = "yellow";
+		ctx.strokeStyle = "red";
 		//desenha a circunferencia
 		ctx.beginPath();
 			ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);// coordenadas, raio, ang inicial, ang final (arco)
@@ -67,7 +67,7 @@ function Shot(x, y, vx, vy, r, dir, angle) {
 	}
 }
 //naves
-function Shooter(center, size, color, rotacao) {
+function Shooter(center, size, color, rotacao, img) {
 	this.center = center || {x: 0, y: 0};
 	this.size  = size || {w: 50, h: 50};
 	this.theta = 0;
@@ -81,6 +81,7 @@ function Shooter(center, size, color, rotacao) {
 	this.ay = 0;
 	this.am = 0; //aceleracao de movimento
 	this.angle = 90;
+	this.image = img;
 
 	this.ballPos = {x: this.center.x, y: this.center.y - this.size.h / 2};
 	//desenha a nave
@@ -89,9 +90,9 @@ function Shooter(center, size, color, rotacao) {
 
 		ctx.save();
 		ctx.translate(this.center.x, this.center.y);
-		ctx.rotate(this.angle*2*Math.PI/360);
+		ctx.rotate(this.angle*8*Math.PI/360);
 		//define a cor
-		ctx.fillStyle = color;
+		/*ctx.fillStyle = color;
 		ctx.strokeStyle = "#00ff26";
 		ctx.beginPath();//desenha o shooter
 			ctx.moveTo(this.size.w / 2, this.size.h / 2);
@@ -99,7 +100,8 @@ function Shooter(center, size, color, rotacao) {
 			ctx.lineTo(this.size.w / 2, -this.size.h / 2);
 		ctx.closePath();
 		ctx.fill();
-		ctx.stroke();
+		ctx.stroke();*/
+		ctx.drawImage(img, -this.size.w/2, -this.size.h/2, this.size.w, this.size.h);
 		//mostra o contorno da caixa de colisao
 		if(true){
 	    ctx.strokeStyle = "grey";
@@ -152,9 +154,9 @@ function Barreira(pos, size){
 
 	this.draw = function(ctx){
 		ctx.rect(this.pos.x, this.pos.y, this.size.w, this.size.h);
-		ctx.strokeStyle = "black";
+		ctx.strokeStyle = "white";
 		//ctx.lineWidth = "2";
-		ctx.fillStyle = "red";
+		ctx.fillStyle = "purple";
 		ctx.fillRect(this.pos.x, this.pos.y, this.size.w, this.size.h);
 		ctx.stroke();
 		//ctx.lineWidth = "0";
