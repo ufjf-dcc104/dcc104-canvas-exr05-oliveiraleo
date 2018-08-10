@@ -15,8 +15,8 @@ var pause = false;
 var inicio = false;
 
 var texto = new Text();
-var texto2 = new Text("Courier", 20, "DarkSlateGrey");
-var texto3 = new Text("Courier", 20, "red");
+var texto2 = new Text("Courier", 20, "#00d4ff");
+var texto3 = new Text("Courier", 20, "#ff0000");
 
 var ganhador = 0;
 
@@ -56,6 +56,8 @@ navePlayer2.src = "img/ship3.png";
 var fundo = new Image();
 fundo.src = "img/fundo.jpeg";
 
+var pedra = new Image();
+pedra.src = "img/asteroid.png";
 //colisao do shooter com as barreiras
 var colideBarreira = function(shooter, parede){
 		if(shooter.center.x+(shooter.size.w/2) >= parede.pos.x &&
@@ -119,16 +121,16 @@ function start() {
 	var shots2 = [];
 	var shoot2 = false;
 
-	var shooter1 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "black", 0, navePlayer1);
-  var shooter2 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "blue", 2*Math.PI, navePlayer2);
+	var shooter1 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "#ff0000", 0, navePlayer1);
+  var shooter2 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "#00d4ff", 2*Math.PI, navePlayer2);
 	//var ball = new Shot(shooter1.ballPos.x, (shooter1.ballPos.y), 0, 0, 12, 0);
   //var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, 1);
 	//Instancia os obstaculos
-	var parede1 = new Barreira({x: WIDTH/6, y: HEIGHT/5}, {w: 50, h: 50});
-	var parede2 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT/6}, {w: 50, h: 50});
-	var parede3 = new Barreira({x: WIDTH/6, y: HEIGHT-(HEIGHT/3)}, {w: 50, h: 50});
-	var parede4 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT-(HEIGHT/4)}, {w: 50, h: 50});
-	var parede5 = new Barreira({x: (WIDTH/2)-80, y: (HEIGHT/2)-30}, {w: 250, h: 50});
+	var parede1 = new Barreira({x: WIDTH/6, y: HEIGHT/5}, {w: 50, h: 50}, pedra);
+	var parede2 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT/6}, {w: 50, h: 50}, pedra);
+	var parede3 = new Barreira({x: WIDTH/6, y: HEIGHT-(HEIGHT/3)}, {w: 50, h: 50}, pedra);
+	var parede4 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT-(HEIGHT/4)}, {w: 50, h: 50}, pedra);
+	var parede5 = new Barreira({x: (WIDTH/2), y: (HEIGHT/2)}, {w: 50, h: 50}, pedra);
 
 	var verificaPontos1 = false;
 	var verificaPontos2 = false;

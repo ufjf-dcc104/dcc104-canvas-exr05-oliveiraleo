@@ -14,8 +14,8 @@ function Shot(x, y, vx, vy, r, dir, angle) {
 	this.angle = angle; //angulo do movimento do tiro
 	//desenha os tiros
 	this.draw = function(ctx) {
-		ctx.fillStyle   = "yellow";
-		ctx.strokeStyle = "red";
+		ctx.fillStyle   = "#b2ff00";
+		ctx.strokeStyle = "#ff0000";
 		//desenha a circunferencia
 		ctx.beginPath();
 			ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);// coordenadas, raio, ang inicial, ang final (arco)
@@ -90,9 +90,9 @@ function Shooter(center, size, color, rotacao, img) {
 
 		ctx.save();
 		ctx.translate(this.center.x, this.center.y);
-		ctx.rotate(this.angle*8*Math.PI/360);
+		ctx.rotate(this.angle*2*Math.PI/360);
 		//define a cor
-		/*ctx.fillStyle = color;
+		ctx.fillStyle = color;
 		ctx.strokeStyle = "#00ff26";
 		ctx.beginPath();//desenha o shooter
 			ctx.moveTo(this.size.w / 2, this.size.h / 2);
@@ -100,8 +100,8 @@ function Shooter(center, size, color, rotacao, img) {
 			ctx.lineTo(this.size.w / 2, -this.size.h / 2);
 		ctx.closePath();
 		ctx.fill();
-		ctx.stroke();*/
-		ctx.drawImage(img, -this.size.w/2, -this.size.h/2, this.size.w, this.size.h);
+		ctx.stroke();
+		//ctx.drawImage(img, -this.size.w/2, -this.size.h/2, this.size.w, this.size.h);
 		//mostra o contorno da caixa de colisao
 		if(true){
 	    ctx.strokeStyle = "grey";
@@ -148,16 +148,18 @@ function Shooter(center, size, color, rotacao, img) {
 	}
 }
 
-function Barreira(pos, size){
+function Barreira(pos, size, image){
 	this.pos = pos;
 	this.size = size;
+	this.sprite = image;
 
 	this.draw = function(ctx){
 		ctx.rect(this.pos.x, this.pos.y, this.size.w, this.size.h);
 		ctx.strokeStyle = "white";
 		//ctx.lineWidth = "2";
-		ctx.fillStyle = "purple";
-		ctx.fillRect(this.pos.x, this.pos.y, this.size.w, this.size.h);
+		//ctx.fillStyle = "purple";
+		//ctx.fillRect(this.pos.x, this.pos.y, this.size.w, this.size.h);
+		ctx.drawImage(this.sprite, this.pos.x, this.pos.y, this.size.w, this.size.h);
 		ctx.stroke();
 		//ctx.lineWidth = "0";
 	}
