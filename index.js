@@ -139,7 +139,7 @@ function start() {
 	var verificaInicio = false;
 
 	var msgInicio = new Text("Courier", 30, "black");
-	var msg = new Text("Courier", 25, "white");
+	var msg = new Text("Courier", 25, "gray");
 
 	//reset do jogo
 	function reset() {
