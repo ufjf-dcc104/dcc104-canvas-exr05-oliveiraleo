@@ -13,13 +13,11 @@ function Text(font, size, rgb) {
 //variaveis globais
 var pause = false;
 var inicio = false;
-
+var ganhador = 0;
+//texto da tela
 var texto = new Text();
 var texto2 = new Text("Courier", 20, "#00d4ff");
 var texto3 = new Text("Courier", 20, "#ff0000");
-
-var ganhador = 0;
-
 //sons
 var musica = new Audio("sound/war.m4a");
 
@@ -47,7 +45,7 @@ var atira2 = function(){
 	tiro2.load();
 	tiro2.play();
 }
-//Imagens
+//Imagens da tela
 var navePlayer1 = new Image();
 navePlayer1.src = "img/ship2.png";
 var navePlayer2 = new Image();
@@ -91,7 +89,7 @@ var colideNave = function(s1, s2){
 			s2.life--;
 		}
 }
-
+//colisao dos tiros com as naves
 var colideTiros = function(nave, tiro){
 	if(nave.center.x+(nave.size.w/2) >= tiro.pos.x &&
 		nave.center.x-(nave.size.w/2) <= tiro.pos.x &&
@@ -116,15 +114,14 @@ function start() {
 
 	const PTSMAX = 2; // pontuacao que encerra o jogo
 	//variaveis globais
+	//vetor de tiros
 	var shots = [];
 	var shoot = false;
 	var shots2 = [];
 	var shoot2 = false;
-
+	//instancia as naves
 	var shooter1 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "#ff0000", 0, navePlayer1);
   var shooter2 = new Shooter({x: 0, y: 0}, {w: 25, h: 25}, "#00d4ff", 2*Math.PI, navePlayer2);
-	//var ball = new Shot(shooter1.ballPos.x, (shooter1.ballPos.y), 0, 0, 12, 0);
-  //var ball2 = new Shot(shooter2.ballPos.x, shooter2.ballPos.y, 0, -325, 12, 1);
 	//Instancia os obstaculos
 	var parede1 = new Barreira({x: WIDTH/6, y: HEIGHT/5}, {w: 50, h: 50}, pedra);
 	var parede2 = new Barreira({x: WIDTH-(WIDTH/3), y: HEIGHT/6}, {w: 50, h: 50}, pedra);
@@ -139,7 +136,8 @@ function start() {
 	var verificaInicio = false;
 
 	var msgInicio = new Text("Courier", 30, "black");
-	var msg = new Text("Courier", 25, "gray");
+	var msg = new Text("Courier", 25, "white");
+	var msgFim = new Text("Courier", 25, "black");
 
 	//reset do jogo
 	function reset() {
@@ -149,14 +147,16 @@ function start() {
 		shots2.length = 0;
 		if(!recomeca){
 			if (verificaInicio) {
+				//mensagens da tela ao fim de uma rodada
 				if (ganhador == 1){
-					msg.raster(ctx, "Player 1 ganhou a rodada!", WIDTH/8, HEIGHT/4);
+					msgFim.raster(ctx, "Player 1 ganhou a rodada!", WIDTH/8, HEIGHT/4);
 				}if (ganhador == 2){
-					msg.raster(ctx, "Player 2 ganhou a rodada!", WIDTH/8, HEIGHT-HEIGHT/3);
+					msgFim.raster(ctx, "Player 2 ganhou a rodada!", WIDTH/8, HEIGHT-HEIGHT/3);
 				}if (shooter1.pontos < PTSMAX && shooter2.pontos < PTSMAX){
-					msg.raster(ctx, "Apertem R para continuar", WIDTH/6, HEIGHT/2 );
+					msgFim.raster(ctx, "Apertem R para continuar", WIDTH/6, HEIGHT/2 );
 				}else {
-					msg.raster(ctx, "Fim de jogo", WIDTH/3, HEIGHT/2 );
+					musica.pause();
+					msgFim.raster(ctx, "Fim de jogo", WIDTH/3, HEIGHT/2 );
 				}
 			}
 		}
@@ -292,16 +292,22 @@ function start() {
 			atira1();
 			e.preventDefault();
 		}if(e.keyCode == 37){ // esquerda player 1
-			shooter1.angle -= 90;
+			//shooter1.angle -= 90;
+			shooter1.angle = 0;
+			shooter1.am = -100;
 			e.preventDefault();
 		}if(e.keyCode == 39){ // direita player 1
-			shooter1.angle += 90;
+			//shooter1.angle += 90;
+			shooter1.angle = 180;
+			shooter1.am = -100;
 			e.preventDefault();
 		}if (e.keyCode == 38) { // cima player 1
 			shooter1.am = -100;
+			shooter1.angle = 90;
 			e.preventDefault();
     }if (e.keyCode == 40) { // baixo player 1
-			shooter1.am = 100;
+			shooter1.am = -100;
+			shooter1.angle = -90;
 			e.preventDefault();
     }if(e.keyCode == 13){// Enter
 			inicio = true;
@@ -346,6 +352,7 @@ function start() {
 			shoot = false;
 		}if(e.keyCode == 37 || e.keyCode == 39){ //esquerda e direita player 1
 			shooter1.vang = 0;
+			shooter1.am = 0;
 		}if (e.keyCode == 38 || e.keyCode == 40) { //cima e baixo player 1
 			shooter1.am = 0;
     }if (e.keyCode == 87 || e.keyCode == 83) {// W e S

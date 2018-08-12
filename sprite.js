@@ -147,18 +147,20 @@ function Shooter(center, size, color, rotacao, img) {
 		}
 	}
 }
-
+//Objetos do mapa
 function Barreira(pos, size, image){
 	this.pos = pos;
 	this.size = size;
 	this.sprite = image;
 
 	this.draw = function(ctx){
+		//mostra a caixa de colisao
 		ctx.rect(this.pos.x, this.pos.y, this.size.w, this.size.h);
 		ctx.strokeStyle = "white";
 		//ctx.lineWidth = "2";
 		//ctx.fillStyle = "purple";
 		//ctx.fillRect(this.pos.x, this.pos.y, this.size.w, this.size.h);
+		//imagem
 		ctx.drawImage(this.sprite, this.pos.x, this.pos.y, this.size.w, this.size.h);
 		ctx.stroke();
 		//ctx.lineWidth = "0";
